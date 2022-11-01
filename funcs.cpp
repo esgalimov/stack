@@ -69,6 +69,9 @@ void error_number_translate(int error_number)
                 case SIZE_CAP_ERROR:
                     write_error_to_log("Size bigger than capacity");
                     break;
+                case POP_ERROR:
+                    write_error_to_log("Try to pop empty stack");
+                    break;
                 default:
                     write_error_to_log("Unknown error");
                     break;
@@ -115,8 +118,12 @@ void stack_pop(stack * stk, elem * value)
             if (stk->size < stk->capacity / 4 && stk->size > 0)
                 stack_resize(stk, stk->capacity / 4);
         }
+        else
+        {
+            error_number += POP_ERROR;
+        }
     }
-    stack_dump(stk, stack_verify(stk));
+    stack_dump(stk, stack_verify(stk) + error_number);
 }
 
 void stack_resize(stack * stk, size_t new_size)

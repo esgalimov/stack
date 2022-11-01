@@ -38,6 +38,7 @@ enum Errors
     SIZE_ERROR = 2,
     CAP_ERROR = 4,
     SIZE_CAP_ERROR = 8,
+    POP_ERROR = 16,
 };
 
 extern FILE * log_file;

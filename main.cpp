@@ -11,14 +11,14 @@ int main(void)
         return 1;
     }
 
-    // test_stack();
+    //test_stack();
 
     FILE * fp = NULL;
     fp = fopen("./input.txt", "r");
     if (fp == NULL)
     {
         printf("Can not open file\n");
-        return 0;
+        return 1;
     }
 
     run_cpu(fp);

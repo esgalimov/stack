@@ -11,12 +11,15 @@ void run_cpu(FILE * stream)
     char cmd[20];
     size_t i = 0;
     int len_cmd = 0;
+
     sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
+
     while (strcmp(cmd, "hlt") != 0 && i < commands.len)
     {
         if (is_without_text(commands.strings[i]))
         {
             i++;
+            sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
             continue;
         }
         if (strcmp(cmd, "push") == 0)
@@ -32,6 +35,41 @@ void run_cpu(FILE * stream)
             stack_pop(&stk, &num1);
             stack_pop(&stk, &num2);
             stack_push(&stk, num1 + num2);
+        }
+        else if (strcmp(cmd, "sub") == 0)
+        {
+            elem num1 = 0;
+            elem num2 = 0;
+            stack_pop(&stk, &num1);
+            stack_pop(&stk, &num2);
+            stack_push(&stk, num2 + num1);
+        }
+        else if (strcmp(cmd, "div") == 0)
+        {
+            elem num1 = 0;
+            elem num2 = 0;
+            stack_pop(&stk, &num1);
+            stack_pop(&stk, &num2);
+            stack_push(&stk, num2 / num1);
+        }
+        else if (strcmp(cmd, "mul") == 0)
+        {
+            elem num1 = 0;
+            elem num2 = 0;
+            stack_pop(&stk, &num1);
+            stack_pop(&stk, &num2);
+            stack_push(&stk, num2 * num1);
+        }
+        else if (strcmp(cmd, "pop") == 0)
+        {
+            elem num = 0;
+            stack_pop(&stk, &num);
+        }
+        else if (strcmp(cmd, "out") == 0)
+        {
+            elem num = 0;
+            stack_pop(&stk, &num);
+            printf("%lg", num);
         }
         else
         {
