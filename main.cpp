@@ -1,8 +1,16 @@
 #include "header.h"
 
+FILE * log_file = NULL;
+
 int main(void)
 {
-    clear_log();
+    log_file = fopen("log.txt", "w");
+    if (log_file == NULL)
+    {
+        printf("Can't open log file!");
+        return 1;
+    }
+
     stack stk1 = {};
     double x = NAN;
     stack_ctor(&stk1, 5);
@@ -49,9 +57,6 @@ int main(void)
     stack_pop(&stk1, &x);
     printf("%lg\n", x);
 
-
-    // for (size_t i = 0; i < stk1.size; i++)
-    //     printf("%lg\n", stk1.data[i]);
     printf("capacity %lu\n", stk1.capacity);
     printf("size %lu\n", stk1.size);
     return 0;

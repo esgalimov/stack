@@ -31,6 +31,7 @@ enum Errors
     SIZE_CAP_ERROR = 8,
 };
 
+extern FILE * log_file;
 
 int stack_ctor_(struct stack * stk, size_t capacity, const char * name,
                 const char * func, const char * file, int line);
@@ -40,8 +41,7 @@ void stack_pop(stack * stk, elem * value);
 void stack_resize(stack * stk, size_t new_size);
 void error_num_translate(int error_number);
 int power_two(int p);
-void write_error_to_log(char * error_string, FILE * stream);
+void write_error_to_log(char * error_string);
 int stack_dump_(stack * stk, const char * func, const char * file, int line);
-void clear_log(void);
 
 #endif
