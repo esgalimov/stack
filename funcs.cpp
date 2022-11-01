@@ -19,10 +19,13 @@ int stack_ctor_(stack * stk, size_t capacity, const char * name,
     stk->file = file;
     stk->line = line;
 
+    int error_number = stack_verify(stk);
+    stack_dump(stk, error_number);
+
     return 0;
 }
 
-int stack_verify(struct stack * stk)
+int stack_verify(stack * stk)
 {
     assert(stk != NULL);
     int error_number = 0;
@@ -80,24 +83,24 @@ void write_error_to_log(char * error_string)
 void stack_push(stack * stk, elem value)
 {
     assert(stk != NULL);
-    int is_ok = 0;
-    is_ok = stack_dump(stk);
-    if (!is_ok)
+    int error_number = stack_verify(stk);
+    stack_dump(stk, error_number);
+    if (!error_number)
     {
         if (stk->size >= stk->capacity)
             stack_resize(stk, stk->capacity * 2);
         stk->data[stk->size] = value;
         stk->size++;
     }
-    stack_dump(stk);
+    stack_dump(stk, stack_verify(stk));
 }
 
 void stack_pop(stack * stk, elem * value)
 {
     assert(stk != NULL);
-    int is_ok = 0;
-    is_ok = stack_dump(stk);
-    if (!is_ok)
+    int error_number = stack_verify(stk);
+    stack_dump(stk, error_number);
+    if (!error_number)
     {
         *value = stk->data[stk->size - 1];
         stk->data[stk->size - 1] = NAN;
@@ -105,20 +108,20 @@ void stack_pop(stack * stk, elem * value)
         if (stk->size < stk->capacity / 4 && stk->size > 0)
             stack_resize(stk, stk->capacity / 4);
     }
-    stack_dump(stk);
+    stack_dump(stk, stack_verify(stk));
 }
 
 void stack_resize(stack * stk, size_t new_size)
 {
     assert(stk != NULL);
-    int is_ok = 0;
-    is_ok = stack_dump(stk);
-    if (!is_ok)
+    int error_number = stack_verify(stk);
+    stack_dump(stk, error_number);
+    if (!error_number)
     {
         stk->data = (elem *) realloc(stk->data, new_size * sizeof(elem));
         stk->capacity = new_size;
     }
-    stack_dump(stk);
+    stack_dump(stk, stack_verify(stk));
 }
 
 int power_two(int p)
@@ -129,26 +132,30 @@ int power_two(int p)
     return ans;
 }
 
-int stack_dump_(stack * stk, const char * func, const char * file, int line)
+void stack_dump_(stack * stk, int error_number, const char * func, const char * file, int line)
 {
-    int error_number = 0;
-    error_number = stack_verify(stk);
     fprintf(log_file, "%s at %s(%d):\n", func, file, line);
     if (!error_number)
     {
         fprintf(log_file, "Stack %p (OK) \"%s\" at %s at %s(%d):\n",
                 stk, stk->name, stk->func, stk->file, stk->line);
+        write_stack_info(stk);
     }
     else
     {
         fprintf(log_file, "Stack %p (ERROR) \"%s\" at %s at %s(%d):\n",
                 stk, stk->name, stk->func, stk->file, stk->line);
         error_number_translate(error_number);
+        write_stack_info(stk);
+        fclose(log_file);
+        abort();
     }
+}
+
+void write_stack_info(stack * stk)
+{
     fprintf(log_file, "{\n    size     = %lu\n    capacity = %lu\n",
             stk->size, stk->capacity);
     fprintf(log_file, "    data %p", stk->data);
     fprintf(log_file, "\n}\n\n\n");
-
-    return error_number;
 }

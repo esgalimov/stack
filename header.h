@@ -8,7 +8,7 @@
 #include <math.h>
 
 #define stack_ctor(stk, size) stack_ctor_((stk), (size), #stk, __PRETTY_FUNCTION__, __FILE__, __LINE__)
-#define stack_dump(stk) stack_dump_((stk), __PRETTY_FUNCTION__, __FILE__, __LINE__)
+#define stack_dump(stk, error_number) stack_dump_((stk), (error_number), __PRETTY_FUNCTION__, __FILE__, __LINE__)
 
 typedef double elem;
 
@@ -33,15 +33,16 @@ enum Errors
 
 extern FILE * log_file;
 
-int stack_ctor_(struct stack * stk, size_t capacity, const char * name,
+int stack_ctor_(stack * stk, size_t capacity, const char * name,
                 const char * func, const char * file, int line);
-int stack_verify(struct stack * stk);
+int stack_verify(stack * stk);
 void stack_push(stack * stk, elem value);
 void stack_pop(stack * stk, elem * value);
 void stack_resize(stack * stk, size_t new_size);
 void error_num_translate(int error_number);
 int power_two(int p);
 void write_error_to_log(char * error_string);
-int stack_dump_(stack * stk, const char * func, const char * file, int line);
+void stack_dump_(stack * stk, int error_number, const char * func, const char * file, int line);
+void write_stack_info(stack * stack);
 
 #endif
