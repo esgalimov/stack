@@ -14,6 +14,11 @@ int stack_ctor_(stack * stk, size_t capacity, const char * name,
     stk->capacity = capacity;
     stk->size = 0;
 
+    for (size_t i = 0; i < stk->capacity; i++)
+    {
+        stk->data[i] = NAN;
+    }
+
     stk->name = name;
     stk->func = func;
     stk->file = file;
@@ -102,11 +107,14 @@ void stack_pop(stack * stk, elem * value)
     stack_dump(stk, error_number);
     if (!error_number)
     {
-        *value = stk->data[stk->size - 1];
-        stk->data[stk->size - 1] = NAN;
-        stk->size--;
-        if (stk->size < stk->capacity / 4 && stk->size > 0)
-            stack_resize(stk, stk->capacity / 4);
+        if (stk->size > 0)
+        {
+            *value = stk->data[stk->size - 1];
+            stk->data[stk->size - 1] = NAN;
+            stk->size--;
+            if (stk->size < stk->capacity / 4 && stk->size > 0)
+                stack_resize(stk, stk->capacity / 4);
+        }
     }
     stack_dump(stk, stack_verify(stk));
 }
@@ -120,7 +128,7 @@ void stack_resize(stack * stk, size_t new_size)
     {
         stk->data = (elem *) realloc(stk->data, new_size * sizeof(elem));
         stk->capacity = new_size;
-        for (int i = stk->size; i < stk->capacity; i++)
+        for (size_t i = stk->size; i < stk->capacity; i++)
         {
             stk->data[i] = NAN;
         }
@@ -170,7 +178,7 @@ void stack_dump_(stack * stk, int error_number, const char * func, const char * 
 void write_stack_elems(stack * stk)
 {
     assert(stk != NULL);
-    for (int i = 0; i < stk->capacity; i++)
+    for (size_t i = 0; i < stk->capacity; i++)
     {
         if (i < stk->size)
             fprintf(log_file, "      *[i] = %lg\n", stk->data[i]);
@@ -182,7 +190,7 @@ void write_stack_elems(stack * stk)
 
 void stack_dtor(stack * stk)
 {
-    for (int i = 0; i < stk->capacity; i++)
+    for (size_t i = 0; i < stk->capacity; i++)
         stk->data[i] = NAN;
     free(stk->data);
     stk->data = NULL;

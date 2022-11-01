@@ -11,40 +11,19 @@ int main(void)
         return 1;
     }
 
-    stack stk1 = {};
-    double x = NAN;
-    stack_ctor(&stk1, 5);
+    // test_stack();
 
-    //--------------------------------------------------
+    FILE * fp = NULL;
+    fp = fopen("./input.txt", "r");
+    if (fp == NULL)
+    {
+        printf("Can not open file\n");
+        return 0;
+    }
 
-    //--------------------------------------------------
-    stack_push(&stk1, 1.33);
-    stack_push(&stk1, 2.99);
-    stack_push(&stk1, 3.99);
-    stack_push(&stk1, 4.99);
-    stack_push(&stk1, 5.99);
-    stack_push(&stk1, 6.99);
-    stack_push(&stk1, 7.33);
-    stack_push(&stk1, 8.99);
-    stack_push(&stk1, 9.99);
-    stack_push(&stk1, 10.99);
-    stack_push(&stk1, 11.99);
-    stack_push(&stk1, 12.99);
+    run_cpu(fp);
 
-
-    stack_pop(&stk1, &x);
-    stack_pop(&stk1, &x);
-    stack_pop(&stk1, &x);
-    stack_pop(&stk1, &x);
-    stack_pop(&stk1, &x);
-    // stk1.data = NULL;
-    stack_pop(&stk1, &x);
-    stack_pop(&stk1, &x);
-    stack_pop(&stk1, &x);
-    stack_pop(&stk1, &x);
-
-    stack_dtor(&stk1);
-
+    fclose(fp);
     fclose(log_file);
     return 0;
 }
