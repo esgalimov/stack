@@ -32,32 +32,19 @@ int main(void)
     stack_push(&stk1, 12.99);
 
 
-    for (size_t i = 0; i < stk1.size; i++)
-        printf("%lg\n", stk1.data[i]);
-    printf("capacity %lu\n", stk1.capacity);
-    printf("size %lu\n\n", stk1.size);
+    stack_pop(&stk1, &x);
+    stack_pop(&stk1, &x);
+    stack_pop(&stk1, &x);
+    stack_pop(&stk1, &x);
+    stack_pop(&stk1, &x);
+    // stk1.data = NULL;
+    stack_pop(&stk1, &x);
+    stack_pop(&stk1, &x);
+    stack_pop(&stk1, &x);
+    stack_pop(&stk1, &x);
 
-    stack_pop(&stk1, &x);
-    printf("%lg\n", x);
-    stack_pop(&stk1, &x);
-    printf("%lg\n", x);
-    stack_pop(&stk1, &x);
-    printf("%lg\n", x);
-    stack_pop(&stk1, &x);
-    printf("%lg\n", x);
-    stack_pop(&stk1, &x);
-    printf("%lg\n", x);
-    stk1.data = NULL;
-    stack_pop(&stk1, &x);
-    printf("%lg\n", x);
-    stack_pop(&stk1, &x);
-    printf("%lg\n", x);
-    stack_pop(&stk1, &x);
-    printf("%lg\n", x);
-    stack_pop(&stk1, &x);
-    printf("%lg\n", x);
+    stack_dtor(&stk1);
 
-    printf("capacity %lu\n", stk1.capacity);
-    printf("size %lu\n", stk1.size);
+    fclose(log_file);
     return 0;
 }

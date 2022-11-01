@@ -43,6 +43,7 @@ void error_num_translate(int error_number);
 int power_two(int p);
 void write_error_to_log(char * error_string);
 void stack_dump_(stack * stk, int error_number, const char * func, const char * file, int line);
-void write_stack_info(stack * stack);
+void write_stack_elems(stack * stk);
+void stack_dtor(stack * stk);
 
 #endif

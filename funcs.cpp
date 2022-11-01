@@ -53,19 +53,19 @@ void error_number_translate(int error_number)
             switch (current_error)
             {
                 case NULL_DATA:
-                    write_error_to_log("data have NULL pointer");
+                    write_error_to_log("Data have NULL pointer");
                     break;
                 case SIZE_ERROR:
-                    write_error_to_log("cize is lower than 0");
+                    write_error_to_log("Size is lower than 0");
                     break;
                 case CAP_ERROR:
-                    write_error_to_log("capacity is lower than 0");
+                    write_error_to_log("Capacity is lower than 0");
                     break;
                 case SIZE_CAP_ERROR:
-                    write_error_to_log("cize bigger than capacity");
+                    write_error_to_log("Size bigger than capacity");
                     break;
                 default:
-                    write_error_to_log("unknown error");
+                    write_error_to_log("Unknown error");
                     break;
             }
         }
@@ -120,6 +120,10 @@ void stack_resize(stack * stk, size_t new_size)
     {
         stk->data = (elem *) realloc(stk->data, new_size * sizeof(elem));
         stk->capacity = new_size;
+        for (int i = stk->size; i < stk->capacity; i++)
+        {
+            stk->data[i] = NAN;
+        }
     }
     stack_dump(stk, stack_verify(stk));
 }
@@ -139,23 +143,52 @@ void stack_dump_(stack * stk, int error_number, const char * func, const char * 
     {
         fprintf(log_file, "Stack %p (OK) \"%s\" at %s at %s(%d):\n",
                 stk, stk->name, stk->func, stk->file, stk->line);
-        write_stack_info(stk);
+
+        fprintf(log_file, "{\n    size     = %lu\n    capacity = %lu\n",
+            stk->size, stk->capacity);
+        fprintf(log_file, "    data [%p]\n      {\n", stk->data);
+        write_stack_elems(stk);
+        fprintf(log_file, "      }");
+        fprintf(log_file, "\n}\n\n\n");
     }
     else
     {
         fprintf(log_file, "Stack %p (ERROR) \"%s\" at %s at %s(%d):\n",
                 stk, stk->name, stk->func, stk->file, stk->line);
         error_number_translate(error_number);
-        write_stack_info(stk);
+
+        fprintf(log_file, "{\n    size     = %lu\n    capacity = %lu\n",
+            stk->size, stk->capacity);
+        fprintf(log_file, "    data [%p]", stk->data);
+        fprintf(log_file, "\n}\n\n\n");
+
         fclose(log_file);
         abort();
     }
 }
 
-void write_stack_info(stack * stk)
+void write_stack_elems(stack * stk)
 {
-    fprintf(log_file, "{\n    size     = %lu\n    capacity = %lu\n",
-            stk->size, stk->capacity);
-    fprintf(log_file, "    data %p", stk->data);
-    fprintf(log_file, "\n}\n\n\n");
+    assert(stk != NULL);
+    for (int i = 0; i < stk->capacity; i++)
+    {
+        if (i < stk->size)
+            fprintf(log_file, "      *[i] = %lg\n", stk->data[i]);
+        else
+            fprintf(log_file, "       [i] = %lg (POISON)\n", stk->data[i]);
+    }
+
 }
+
+void stack_dtor(stack * stk)
+{
+    for (int i = 0; i < stk->capacity; i++)
+        stk->data[i] = NAN;
+    free(stk->data);
+    stk->data = NULL;
+    stk->size = 0;
+    stk->capacity = 0;
+    fprintf(log_file, "Stack %p \"%s\" at %s at %s(%d): DESTRUCTED\n",
+                stk, stk->name, stk->func, stk->file, stk->line);
+}
+
