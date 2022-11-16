@@ -11,7 +11,7 @@ int main(void)
         return 1;
     }
 
-    //test_stack();
+    // test_stack();
 
     FILE * fp = NULL;
     fp = fopen("./input.txt", "r");

@@ -1,7 +1,6 @@
 #include "header.h"
 
-int stack_ctor_(stack * stk, size_t capacity, const char * name,
-                const char * func, const char * file, int line)
+int stack_ctor_(stack * stk, size_t capacity, var_info info)
 {
     if (stk == NULL || capacity < 1)
         return 1;
@@ -19,10 +18,10 @@ int stack_ctor_(stack * stk, size_t capacity, const char * name,
         stk->data[i] = NAN;
     }
 
-    stk->info.name = name;
-    stk->info.func = func;
-    stk->info.file = file;
-    stk->info.line = line;
+    stk->info.name = info.name;
+    stk->info.func = info.func;
+    stk->info.file = info.file;
+    stk->info.line = info.line;
 
     int error_number = stack_verify(stk);
     stack_dump(stk, error_number);

@@ -8,28 +8,6 @@
 #include <math.h>
 #include <string.h>
 
-#define LOCATION __PRETTY_FUNCTION__, __FILE__, __LINE__
-#define stack_ctor(stk, size) stack_ctor_((stk), (size), var_info {#stk, LOCATION})
-#define stack_dump(stk, error_number) stack_dump_((stk), (error_number), __PRETTY_FUNCTION__, __FILE__, __LINE__)
-
-typedef double elem;
-
-struct var_info
-{
-    const char * name;
-    const char * func;
-    const char * file;
-    int line;
-};
-
-struct stack
-{
-    elem * data;
-    size_t size;
-    size_t capacity;
-    var_info info;
-};
-
 struct Text
 {
     char ** strings;
@@ -38,30 +16,9 @@ struct Text
     size_t filesize;
 };
 
-enum Errors
-{
-    NULL_DATA = 1,
-    SIZE_ERROR = 2,
-    CAP_ERROR = 4,
-    SIZE_CAP_ERROR = 8,
-    POP_ERROR = 16,
-};
+typedef double elem;
 
-extern FILE * log_file;
-
-int stack_ctor_(stack * stk, size_t capacity, var_info info);
-int stack_verify(stack * stk);
-void stack_push(stack * stk, elem value);
-void stack_pop(stack * stk, elem * value);
-void stack_resize(stack * stk, size_t new_size);
-void error_num_translate(int error_number);
-int power_two(int p);
-void write_error_to_log(char * error_string);
-void stack_dump_(stack * stk, int error_number, const char * func, const char * file, int line);
-void write_stack_elems(stack * stk);
-void stack_dtor(stack * stk);
-void test_stack(void);
-void run_cpu(FILE * stream);
+void run_comp(FILE * stream);
 
 //! @brief Function that import text from file and write it into the buffer
 //! in allocated memory with calloc

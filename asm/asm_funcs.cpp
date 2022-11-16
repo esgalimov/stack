@@ -1,12 +1,17 @@
-#include "header.h"
+#include "comp_header.h"
 
-void run_cpu(FILE * stream)
+void run_comp(FILE * stream)
 {
+    FILE * fp = NULL;
+    fp = fopen("test.code", "w");
+    if (fp == NULL)
+    {
+        printf("Can't open file");
+        abort();
+    }
+
     struct Text commands = {};
     construct(&commands, stream);
-
-    stack stk = {};
-    stack_ctor(&stk, 5);
 
     char cmd[20] = "";
     size_t i = 0;
@@ -26,50 +31,32 @@ void run_cpu(FILE * stream)
         {
             elem value = 0;
             sscanf(commands.strings[i] + len_cmd, "%lf", &value);
-            stack_push(&stk, value);
+            fprintf(fp, "%d %lg\n", 1, value);
+
         }
         else if (strcmp(cmd, "add") == 0)
         {
-            elem num1 = 0;
-            elem num2 = 0;
-            stack_pop(&stk, &num1);
-            stack_pop(&stk, &num2);
-            stack_push(&stk, num1 + num2);
+            fprintf(fp, "%d\n", 2);
         }
         else if (strcmp(cmd, "sub") == 0)
         {
-            elem num1 = 0;
-            elem num2 = 0;
-            stack_pop(&stk, &num1);
-            stack_pop(&stk, &num2);
-            stack_push(&stk, num2 - num1);
+            fprintf(fp, "%d\n", 3);
         }
         else if (strcmp(cmd, "div") == 0)
         {
-            elem num1 = 0;
-            elem num2 = 0;
-            stack_pop(&stk, &num1);
-            stack_pop(&stk, &num2);
-            stack_push(&stk, num2 / num1);
+            fprintf(fp, "%d\n", 4);
         }
         else if (strcmp(cmd, "mul") == 0)
         {
-            elem num1 = 0;
-            elem num2 = 0;
-            stack_pop(&stk, &num1);
-            stack_pop(&stk, &num2);
-            stack_push(&stk, num2 * num1);
+            fprintf(fp, "%d\n", 5);
         }
         else if (strcmp(cmd, "pop") == 0)
         {
-            elem num = 0;
-            stack_pop(&stk, &num);
+            fprintf(fp, "%d\n", 6);
         }
         else if (strcmp(cmd, "out") == 0)
         {
-            elem num = 0;
-            stack_pop(&stk, &num);
-            printf("%lg", num);
+            fprintf(fp, "%d\n", 0);
         }
         else
         {
@@ -80,7 +67,7 @@ void run_cpu(FILE * stream)
     }
 
     destruct(&commands);
-    stack_dtor(&stk);
+    fclose(fp);
 }
 
 char ** import_text(struct Text * book, FILE * stream)
@@ -178,3 +165,4 @@ void destruct(struct Text * book)
     book->strings = NULL;
     book->buffer = NULL;
 }
+
