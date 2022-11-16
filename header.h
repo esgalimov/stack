@@ -8,20 +8,26 @@
 #include <math.h>
 #include <string.h>
 
-#define stack_ctor(stk, size) stack_ctor_((stk), (size), #stk, __PRETTY_FUNCTION__, __FILE__, __LINE__)
+#define LOCATION __PRETTY_FUNCTION__, __FILE__, __LINE__
+#define stack_ctor(stk, size) stack_ctor_((stk), (size), #stk, LOCATION)
 #define stack_dump(stk, error_number) stack_dump_((stk), (error_number), __PRETTY_FUNCTION__, __FILE__, __LINE__)
 
 typedef double elem;
+
+struct stack_info
+{
+    const char * name;
+    const char * func;
+    const char * file;
+    int line;
+};
 
 struct stack
 {
     elem * data;
     size_t size;
     size_t capacity;
-    const char * name;
-    const char * func;
-    const char * file;
-    int line;
+    stack_info info;
 };
 
 struct Text

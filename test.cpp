@@ -11,8 +11,6 @@ void test_stack(void)
     stack_push(&stk1, 3.99);
     stack_push(&stk1, 4.99);
 
-
-
     stack_pop(&stk1, &x);
     stack_pop(&stk1, &x);
     stack_pop(&stk1, &x);

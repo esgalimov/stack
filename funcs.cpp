@@ -19,10 +19,10 @@ int stack_ctor_(stack * stk, size_t capacity, const char * name,
         stk->data[i] = NAN;
     }
 
-    stk->name = name;
-    stk->func = func;
-    stk->file = file;
-    stk->line = line;
+    stk->info.name = name;
+    stk->info.func = func;
+    stk->info.file = file;
+    stk->info.line = line;
 
     int error_number = stack_verify(stk);
     stack_dump(stk, error_number);
@@ -116,7 +116,7 @@ void stack_pop(stack * stk, elem * value)
             stk->data[stk->size - 1] = NAN;
             stk->size--;
             if (stk->size < stk->capacity / 4 && stk->size > 0)
-                stack_resize(stk, stk->capacity / 4);
+                stack_resize(stk, stk->capacity / 2);
         }
         else
         {
@@ -157,7 +157,7 @@ void stack_dump_(stack * stk, int error_number, const char * func, const char * 
     if (!error_number)
     {
         fprintf(log_file, "Stack %p (OK) \"%s\" at %s at %s(%d):\n",
-                stk, stk->name, stk->func, stk->file, stk->line);
+                stk, stk->info.name, stk->info.func, stk->info.file, stk->info.line);
 
         fprintf(log_file, "{\n    size     = %lu\n    capacity = %lu\n",
             stk->size, stk->capacity);
@@ -169,7 +169,7 @@ void stack_dump_(stack * stk, int error_number, const char * func, const char * 
     else
     {
         fprintf(log_file, "Stack %p (ERROR) \"%s\" at %s at %s(%d):\n",
-                stk, stk->name, stk->func, stk->file, stk->line);
+                stk, stk->info.name, stk->info.func, stk->info.file, stk->info.line);
         error_number_translate(error_number);
 
         fprintf(log_file, "{\n    size     = %lu\n    capacity = %lu\n",
@@ -204,6 +204,6 @@ void stack_dtor(stack * stk)
     stk->size = 0;
     stk->capacity = 0;
     fprintf(log_file, "Stack %p \"%s\" at %s at %s(%d): DESTRUCTED\n",
-                stk, stk->name, stk->func, stk->file, stk->line);
+                stk, stk->info.name, stk->info.func, stk->info.file, stk->info.line);
 }
 

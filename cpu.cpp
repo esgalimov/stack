@@ -42,7 +42,7 @@ void run_cpu(FILE * stream)
             elem num2 = 0;
             stack_pop(&stk, &num1);
             stack_pop(&stk, &num2);
-            stack_push(&stk, num2 + num1);
+            stack_push(&stk, num2 - num1);
         }
         else if (strcmp(cmd, "div") == 0)
         {
