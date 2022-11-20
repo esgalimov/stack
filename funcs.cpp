@@ -18,10 +18,7 @@ int stack_ctor_(stack * stk, size_t capacity, var_info info)
         stk->data[i] = NAN;
     }
 
-    stk->info.name = info.name;
-    stk->info.func = info.func;
-    stk->info.file = info.file;
-    stk->info.line = info.line;
+    stk->info = info;
 
     int error_number = stack_verify(stk);
     stack_dump(stk, error_number);
@@ -50,7 +47,7 @@ void error_number_translate(int error_number)
     int current_error = 0;
     while (error_number >= 1)
     {
-        if (error_number % 2 == 1)
+        if (error_number & 1)
         {
             current_error = power_two(current);
 
@@ -77,11 +74,11 @@ void error_number_translate(int error_number)
             }
         }
         current++;
-        error_number /= 2;
+        error_number >>= 1;
     }
 }
 
-void write_error_to_log(char * error_string)
+void write_error_to_log(const char * error_string)
 {
     fputs(error_string, log_file);
     fputs("\n", log_file);

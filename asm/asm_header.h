@@ -16,9 +16,26 @@ struct Text
     size_t filesize;
 };
 
+enum Commands
+{
+    HLT = 0,
+    PUSH = 1,
+    ADD = 2,
+    SUB = 3,
+    DIV = 4,
+    MUL = 5,
+    POP = 6,
+    OUT = 7,
+};
+
+
 typedef double elem;
 
 void run_comp(FILE * stream);
+
+void one_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name);
+
+void no_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name);
 
 //! @brief Function that import text from file and write it into the buffer
 //! in allocated memory with calloc

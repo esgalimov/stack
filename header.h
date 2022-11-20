@@ -50,17 +50,29 @@ enum Errors
 extern FILE * log_file;
 
 int stack_ctor_(stack * stk, size_t capacity, var_info info);
+
 int stack_verify(stack * stk);
+
 void stack_push(stack * stk, elem value);
+
 void stack_pop(stack * stk, elem * value);
+
 void stack_resize(stack * stk, size_t new_size);
+
 void error_num_translate(int error_number);
+
 int power_two(int p);
-void write_error_to_log(char * error_string);
+
+void write_error_to_log(const char * error_string);
+
 void stack_dump_(stack * stk, int error_number, const char * func, const char * file, int line);
+
 void write_stack_elems(stack * stk);
+
 void stack_dtor(stack * stk);
+
 void test_stack(void);
+
 void run_cpu(FILE * stream);
 
 //! @brief Function that import text from file and write it into the buffer

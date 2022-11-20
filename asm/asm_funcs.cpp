@@ -1,4 +1,4 @@
-#include "comp_header.h"
+#include "asm_header.h"
 
 void run_comp(FILE * stream)
 {
@@ -19,7 +19,7 @@ void run_comp(FILE * stream)
 
     sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
 
-    while (strcmp(cmd, "hlt") != 0 && i < commands.len)
+    while (i < commands.len)
     {
         if (is_without_text(commands.strings[i]))
         {
@@ -29,38 +29,53 @@ void run_comp(FILE * stream)
         }
         if (strcmp(cmd, "push") == 0)
         {
+            one_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
+
             elem value = 0;
             sscanf(commands.strings[i] + len_cmd, "%lf", &value);
-            fprintf(fp, "%d %lg\n", 1, value);
+            fprintf(fp, "%d %lg\n", PUSH, value);
 
         }
         else if (strcmp(cmd, "add") == 0)
         {
-            fprintf(fp, "%d\n", 2);
+            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
+            fprintf(fp, "%d\n", ADD);
         }
         else if (strcmp(cmd, "sub") == 0)
         {
-            fprintf(fp, "%d\n", 3);
+            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
+            fprintf(fp, "%d\n", SUB);
         }
         else if (strcmp(cmd, "div") == 0)
         {
-            fprintf(fp, "%d\n", 4);
+            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
+            fprintf(fp, "%d\n", DIV);
         }
         else if (strcmp(cmd, "mul") == 0)
         {
-            fprintf(fp, "%d\n", 5);
+            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
+            fprintf(fp, "%d\n", MUL);
         }
         else if (strcmp(cmd, "pop") == 0)
         {
-            fprintf(fp, "%d\n", 6);
+            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
+            fprintf(fp, "%d\n", POP);
         }
         else if (strcmp(cmd, "out") == 0)
         {
-            fprintf(fp, "%d\n", 0);
+            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
+            fprintf(fp, "%d\n", OUT);
+        }
+        else if (strcmp(cmd, "hlt") == 0)
+        {
+            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
+            fprintf(fp, "%d\n", HLT);
+            break;
         }
         else
         {
-            printf("Invalid syntax");
+            printf("Error: command not found at line %lu\n", i + 1);
+            abort();
         }
         i++;
         sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
@@ -70,99 +85,42 @@ void run_comp(FILE * stream)
     fclose(fp);
 }
 
-char ** import_text(struct Text * book, FILE * stream)
+void one_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
 {
-    assert(stream != NULL);
-    assert(book != NULL);
+    int len_arg = 0;
+    elem value = NAN;
 
-    fseek(stream, 0L, SEEK_END);
-    book->filesize = (size_t) ftell(stream);
-    rewind(stream);
+    sscanf(ptr_to_args, "%lf%n", &value, &len_arg);
 
-    book->buffer = (char *) calloc(book->filesize + 1, sizeof(char));
-    fread(book->buffer, sizeof(char), book->filesize, stream);
-    *(book->buffer + book->filesize) = '\0';
+    if (len_arg == 0)
+    {
+        printf("Error: invalid syntax at line %lu: %s has not given an argument, but it must have 1 argument\n", line + 1, cmd_name);
+        abort();
+    }
+    else
+    {
+        int gap = len_arg;
+        len_arg = 0;
 
-    book->len = count_symbol('\n', book->buffer, book->filesize);
-
-    return get_ptrs(book->buffer, book->len, book->filesize);
-}
-
-
-size_t count_symbol(char ch, char * string, size_t filesize)
-{
-    assert(string != NULL);
-
-    size_t cnt_strings = 0;
-    for (size_t i = 0; i < filesize; i++)
-        if (string[i] == ch)
-            cnt_strings++;
-    return cnt_strings;
-}
-
-
-char ** get_ptrs(char * strings, size_t n_strings, size_t filesize)
-{
-    assert(strings != NULL);
-    char ** strptr = (char **) calloc((size_t) (n_strings + 1), sizeof(char *));
-
-    if (strptr == NULL)
-        return NULL;
-
-    strptr[0] = &strings[0];
-    size_t index = 1;
-    for (size_t i = 1; i < filesize; i++)
-        if (strings[i] == '\n')
+        sscanf(ptr_to_args + gap, "%lf%n", &value, &len_arg);
+        if (len_arg > 0)
         {
-            if (index < n_strings)
-            {
-                strings[i] = '\0';
-                strptr[index] = &strings[i + 1];
-                index++;
-            }
+            printf("Error: invalid syntax at line %lu: %s has given more than 1 argument, but it must have 1 argument\n", line + 1, cmd_name);
+            abort();
         }
-    strptr[index] = NULL;
-
-    return strptr;
+    }
 }
 
-int is_without_text(const char * str)
+void no_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
 {
-    assert(str != NULL);
-    int flag = 1;
-    int len = (int) strlen(str);
-    for (int i = 0; i < len; i++)
-        if (!isblank(str[i]))
-        {
-            flag = 0;
-            break;
-        }
-    return flag;
+    int len_arg = 0;
+    elem value = NAN;
+
+    sscanf(ptr_to_args, "%lf%n", &value, &len_arg);
+
+    if (len_arg > 0)
+    {
+        printf("Error: invalid syntax at line %lu: %s must not have arguments \n", line + 1, cmd_name);
+        abort();
+    }
 }
-
-void construct(struct Text * book, FILE * stream)
-{
-    assert(book != NULL);
-    assert(stream != NULL);
-
-    book->strings = NULL;
-    book->buffer = NULL;
-    book->len = 0;
-    book->filesize = 0;
-
-    book->strings = import_text(book, stream);
-    fclose(stream);
-}
-
-void destruct(struct Text * book)
-{
-    assert(book != NULL);
-
-    book->len = 0;
-    book->filesize = 0;
-    free(book->buffer);
-    free(book->strings);
-    book->strings = NULL;
-    book->buffer = NULL;
-}
-

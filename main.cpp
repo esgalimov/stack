@@ -11,7 +11,7 @@ int main(void)
         return 1;
     }
 
-    // test_stack();
+    test_stack();
 
     FILE * fp = NULL;
     fp = fopen("./input.txt", "r");
@@ -21,7 +21,7 @@ int main(void)
         return 1;
     }
 
-    run_cpu(fp);
+    //run_cpu(fp);
 
     fclose(fp);
     fclose(log_file);
