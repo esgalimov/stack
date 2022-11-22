@@ -6,8 +6,8 @@ int stack_ctor_(stack * stk, size_t capacity, var_info info)
         return 1;
 
 
-    if (capacity < 8)
-        capacity = 8;
+    if (capacity < MIN_CAPACITY)
+        capacity = MIN_CAPACITY;
 
     stk->data = (elem *) calloc(capacity, sizeof(elem));
     stk->capacity = capacity;

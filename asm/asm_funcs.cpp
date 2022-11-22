@@ -13,18 +13,17 @@ void run_comp(FILE * stream)
     struct Text commands = {};
     construct(&commands, stream);
 
-    char cmd[20] = "";
     size_t i = 0;
-    int len_cmd = 0;
+    int len_cmd = 0, is_hlt = 0;
 
-    sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
-
-    while (i < commands.len)
+    while (i < commands.len && is_hlt != 1)
     {
-        if (is_without_text(commands.strings[i]))
+        char cmd[20] = "";
+        sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
+
+        if (is_without_text(cmd))
         {
             i++;
-            sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
             continue;
         }
         if (strcmp(cmd, "push") == 0)
@@ -70,6 +69,7 @@ void run_comp(FILE * stream)
         {
             no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
             fprintf(fp, "%d\n", HLT);
+            is_hlt = 1;
             break;
         }
         else
@@ -78,7 +78,12 @@ void run_comp(FILE * stream)
             abort();
         }
         i++;
-        sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
+    }
+
+    if (is_hlt == 0)
+    {
+        printf("Error: there is no hlt command in programm\n");
+        abort();
     }
 
     destruct(&commands);
@@ -87,6 +92,8 @@ void run_comp(FILE * stream)
 
 void one_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
 {
+    assert(ptr_to_args != NULL);
+
     int len_arg = 0;
     elem value = NAN;
 
@@ -113,6 +120,8 @@ void one_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
 
 void no_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
 {
+    assert(ptr_to_args != NULL);
+
     int len_arg = 0;
     elem value = NAN;
 

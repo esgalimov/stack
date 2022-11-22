@@ -1,9 +1,9 @@
 int stack_ctor_(stack *, size_t, var_info) at funcs.cpp(24):
-Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
 {
     size     = 0
     capacity = 8
-    data [0x1049014c0]
+    data [0x1044014c0]
       {
        [i] = nan (POISON)
        [i] = nan (POISON)
@@ -18,11 +18,11 @@ Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
 
 
 void stack_push(stack *, elem) at funcs.cpp(91):
-Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
 {
     size     = 0
     capacity = 8
-    data [0x1049014c0]
+    data [0x1044014c0]
       {
        [i] = nan (POISON)
        [i] = nan (POISON)
@@ -37,13 +37,13 @@ Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
 
 
 void stack_push(stack *, elem) at funcs.cpp(99):
-Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
 {
     size     = 1
     capacity = 8
-    data [0x1049014c0]
+    data [0x1044014c0]
       {
-      *[i] = 1.33
+      *[i] = -3
        [i] = nan (POISON)
        [i] = nan (POISON)
        [i] = nan (POISON)
@@ -56,13 +56,13 @@ Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
 
 
 void stack_push(stack *, elem) at funcs.cpp(91):
-Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
 {
     size     = 1
     capacity = 8
-    data [0x1049014c0]
+    data [0x1044014c0]
       {
-      *[i] = 1.33
+      *[i] = -3
        [i] = nan (POISON)
        [i] = nan (POISON)
        [i] = nan (POISON)
@@ -75,14 +75,14 @@ Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
 
 
 void stack_push(stack *, elem) at funcs.cpp(99):
-Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
 {
     size     = 2
     capacity = 8
-    data [0x1049014c0]
+    data [0x1044014c0]
       {
-      *[i] = 1.33
-      *[i] = 2.99
+      *[i] = -3
+      *[i] = -3
        [i] = nan (POISON)
        [i] = nan (POISON)
        [i] = nan (POISON)
@@ -93,17 +93,111 @@ Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
 }
 
 
-void stack_push(stack *, elem) at funcs.cpp(91):
-Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
+void stack_pop(stack *, elem *) at funcs.cpp(106):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
 {
     size     = 2
     capacity = 8
-    data [0x1049014c0]
+    data [0x1044014c0]
       {
-      *[i] = 1.33
-      *[i] = 2.99
+      *[i] = -3
+      *[i] = -3
        [i] = nan (POISON)
        [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_resize(stack *, size_t) at funcs.cpp(129):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 8
+    data [0x1044014c0]
+      {
+      *[i] = -3
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_resize(stack *, size_t) at funcs.cpp(139):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = -3
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(122):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = -3
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(106):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = -3
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(122):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 0
+    capacity = 4
+    data [0x104501fc0]
+      {
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(91):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 0
+    capacity = 4
+    data [0x104501fc0]
+      {
        [i] = nan (POISON)
        [i] = nan (POISON)
        [i] = nan (POISON)
@@ -113,16 +207,342 @@ Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
 
 
 void stack_push(stack *, elem) at funcs.cpp(99):
-Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(91):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(99):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 2
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(91):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 2
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(99):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
 {
     size     = 3
-    capacity = 8
-    data [0x1049014c0]
+    capacity = 4
+    data [0x104501fc0]
       {
-      *[i] = 1.33
-      *[i] = 2.99
-      *[i] = 3.99
+      *[i] = 9
+      *[i] = -4
+      *[i] = 1
        [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(91):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 3
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+      *[i] = 1
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(99):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 4
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+      *[i] = 1
+      *[i] = -7
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(106):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 4
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+      *[i] = 1
+      *[i] = -7
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(122):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 3
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+      *[i] = 1
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(106):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 3
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+      *[i] = 1
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(122):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 2
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(91):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 2
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(99):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 3
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+      *[i] = -7
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(106):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 3
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+      *[i] = -7
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(122):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 2
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(106):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 2
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = -4
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(122):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(91):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_push(stack *, elem) at funcs.cpp(99):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 2
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = 28
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(106):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 2
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+      *[i] = 28
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(122):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(106):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 9
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(122):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 0
+    capacity = 4
+    data [0x104501fc0]
+      {
        [i] = nan (POISON)
        [i] = nan (POISON)
        [i] = nan (POISON)
@@ -132,13 +552,63 @@ Stack 0x16d61f760 (OK) "&stk1" at void test_stack() at test.cpp(7):
 
 
 void stack_push(stack *, elem) at funcs.cpp(91):
-Stack 0x16d61f760 (ERROR) "&stk1" at void test_stack() at test.cpp(7):
-Data have NULL pointer
-Size bigger than capacity
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
 {
-    size     = 3
-    capacity = 1
-    data [0x0]
+    size     = 0
+    capacity = 4
+    data [0x104501fc0]
+      {
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
 }
 
 
+void stack_push(stack *, elem) at funcs.cpp(99):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 37
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(106):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 1
+    capacity = 4
+    data [0x104501fc0]
+      {
+      *[i] = 37
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+void stack_pop(stack *, elem *) at funcs.cpp(122):
+Stack 0x16dcc7620 (OK) "&stk" at void run_cpu(FILE *) at cpu.cpp(8):
+{
+    size     = 0
+    capacity = 4
+    data [0x104501fc0]
+      {
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+       [i] = nan (POISON)
+      }
+}
+
+
+Stack 0x16dcc7620 "&stk" at void run_cpu(FILE *) at cpu.cpp(8): DESTRUCTED
