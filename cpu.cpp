@@ -7,21 +7,24 @@ void run_cpu(FILE * stream)
     stack stk = {};
     stack_ctor(&stk, 5);
 
-    int cmd = 0;
+    elem num1 = 0;
+    elem num2 = 0;
 
-    elem num1 = NAN;
-    elem num2 = NAN;
-    elem value = NAN;
+    fseek(stream, 0L, SEEK_END);
+    size_t filesize = (size_t) ftell(stream);
+    rewind(stream);
 
-    fscanf(stream, "%d", &cmd);
+    size_t n_cmd = filesize / sizeof(elem);
 
-    while (cmd != HLT)
+    elem * cmd_buffer = (elem *) calloc(n_cmd, sizeof(elem));
+    fread(cmd_buffer, sizeof(elem), n_cmd, stream);
+
+    for (size_t i = 0; i < n_cmd && cmd_buffer[i] != HLT; i++)
     {
-        switch (cmd)
+        switch (cmd_buffer[i])
         {
         case PUSH:
-            fscanf(stream, "%lf", &value);
-            stack_push(&stk, value);
+            stack_push(&stk, cmd_buffer[++i]);
             break;
 
         case ADD:
@@ -54,15 +57,14 @@ void run_cpu(FILE * stream)
 
         case OUT:
             stack_pop(&stk, &num1);
-            printf("%lg", num1);
+            printf("%d\n", num1);
             break;
 
         default:
-            printf("Error: undefind command");
+            printf("Error: undefind command\n");
             abort();
             break;
         }
-        fscanf(stream, "%d", &cmd);
     }
 
     stack_dtor(&stk);

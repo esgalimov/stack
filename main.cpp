@@ -13,17 +13,16 @@ int main(void)
 
     //test_stack();
 
-    FILE * fp = NULL;
-    fp = fopen("./asm/test.code", "r");
-    if (fp == NULL)
+    FILE * fp_bin = fopen("./asm/test.bin", "rb");
+    if (fp_bin == NULL)
     {
         printf("Can not open file\n");
         return 1;
     }
 
-    run_cpu(fp);
+    run_cpu(fp_bin);
 
-    fclose(fp);
+    fclose(fp_bin);
     fclose(log_file);
     return 0;
 }

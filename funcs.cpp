@@ -13,10 +13,7 @@ int stack_ctor_(stack * stk, size_t capacity, var_info info)
     stk->capacity = capacity;
     stk->size = 0;
 
-    for (size_t i = 0; i < stk->capacity; i++)
-    {
-        stk->data[i] = NAN;
-    }
+    write_zeros_to_data(stk, 0, stk->capacity);
 
     stk->info = info;
 
@@ -109,7 +106,7 @@ void stack_pop(stack * stk, elem * value)
         if (stk->size > 0)
         {
             *value = stk->data[stk->size - 1];
-            stk->data[stk->size - 1] = NAN;
+            stk->data[stk->size - 1] = 0;
             stk->size--;
             if (stk->size < stk->capacity / 4 && stk->size > 0)
                 stack_resize(stk, stk->capacity / 2);
@@ -125,16 +122,17 @@ void stack_pop(stack * stk, elem * value)
 void stack_resize(stack * stk, size_t new_size)
 {
     assert(stk != NULL);
+
     int error_number = stack_verify(stk);
+
     stack_dump(stk, error_number);
+
     if (!error_number)
     {
         stk->data = (elem *) realloc(stk->data, new_size * sizeof(elem));
         stk->capacity = new_size;
-        for (size_t i = stk->size; i < stk->capacity; i++)
-        {
-            stk->data[i] = NAN;
-        }
+
+        write_zeros_to_data(stk, stk->size, stk->capacity);
     }
     stack_dump(stk, stack_verify(stk));
 }
@@ -145,6 +143,14 @@ int power_two(int p)
     for (int i = 0; i < p; i++)
         ans *= 2;
     return ans;
+}
+
+void write_zeros_to_data(stack * stk, size_t i_start, size_t i_end)
+{
+    for (size_t i = i_start; i < i_end; i++)
+    {
+        stk->data[i] = 0;
+    }
 }
 
 void stack_dump_(stack * stk, int error_number, const char * func, const char * file, int line)
@@ -184,21 +190,22 @@ void write_stack_elems(stack * stk)
     for (size_t i = 0; i < stk->capacity; i++)
     {
         if (i < stk->size)
-            fprintf(log_file, "      *[i] = %lg\n", stk->data[i]);
+            fprintf(log_file, "      *[i] = %d\n", stk->data[i]);
         else
-            fprintf(log_file, "       [i] = %lg (POISON)\n", stk->data[i]);
+            fprintf(log_file, "       [i] = %d (POISON)\n", stk->data[i]);
     }
 
 }
 
 void stack_dtor(stack * stk)
 {
-    for (size_t i = 0; i < stk->capacity; i++)
-        stk->data[i] = NAN;
+    write_zeros_to_data(stk, 0, stk->capacity);
+
     free(stk->data);
     stk->data = NULL;
     stk->size = 0;
     stk->capacity = 0;
+
     fprintf(log_file, "Stack %p \"%s\" at %s at %s(%d): DESTRUCTED\n",
                 stk, stk->info.name, stk->info.func, stk->info.file, stk->info.line);
 }

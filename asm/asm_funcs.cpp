@@ -2,9 +2,10 @@
 
 void run_comp(FILE * stream)
 {
-    FILE * fp = NULL;
-    fp = fopen("test.code", "w");
-    if (fp == NULL)
+    FILE * fp = fopen("test.code", "w");
+    FILE * fp_bin = fopen("test.bin", "wb");
+
+    if (fp == NULL || fp_bin == NULL)
     {
         printf("Can't open file");
         abort();
@@ -16,7 +17,10 @@ void run_comp(FILE * stream)
     size_t i = 0;
     int len_cmd = 0, is_hlt = 0;
 
-    while (i < commands.len && is_hlt != 1)
+    elem * code = (elem *) calloc(commands.len * 2, sizeof(elem));
+    size_t i_code = 0;
+
+    while (i < commands.len)
     {
         char cmd[20] = "";
         sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
@@ -31,45 +35,63 @@ void run_comp(FILE * stream)
             one_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
 
             elem value = 0;
-            sscanf(commands.strings[i] + len_cmd, "%lf", &value);
-            fprintf(fp, "%d %lg\n", PUSH, value);
+            sscanf(commands.strings[i] + len_cmd, "%d", &value);
+            fprintf(fp, "%d %d\n", PUSH, value);
+
+            code[i_code++] = PUSH;
+            code[i_code++] = value;
 
         }
         else if (strcmp(cmd, "add") == 0)
         {
             no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
             fprintf(fp, "%d\n", ADD);
+
+            code[i_code++] = ADD;
         }
         else if (strcmp(cmd, "sub") == 0)
         {
             no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
             fprintf(fp, "%d\n", SUB);
+
+            code[i_code++] = SUB;
         }
         else if (strcmp(cmd, "div") == 0)
         {
             no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
             fprintf(fp, "%d\n", DIV);
+
+            code[i_code++] = DIV;
         }
         else if (strcmp(cmd, "mul") == 0)
         {
             no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
             fprintf(fp, "%d\n", MUL);
+
+            code[i_code++] = MUL;
         }
         else if (strcmp(cmd, "pop") == 0)
         {
             no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
             fprintf(fp, "%d\n", POP);
+
+            code[i_code++] = POP;
         }
         else if (strcmp(cmd, "out") == 0)
         {
             no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
             fprintf(fp, "%d\n", OUT);
+
+            code[i_code++] = OUT;
         }
         else if (strcmp(cmd, "hlt") == 0)
         {
             no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
             fprintf(fp, "%d\n", HLT);
             is_hlt = 1;
+
+            code[i_code++] = HLT;
+
             break;
         }
         else
@@ -86,6 +108,9 @@ void run_comp(FILE * stream)
         abort();
     }
 
+    fwrite(code, sizeof(elem), i_code, fp_bin);
+    free(code);
+
     destruct(&commands);
     fclose(fp);
 }
@@ -95,9 +120,9 @@ void one_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
     assert(ptr_to_args != NULL);
 
     int len_arg = 0;
-    elem value = NAN;
+    elem value = 0;
 
-    sscanf(ptr_to_args, "%lf%n", &value, &len_arg);
+    sscanf(ptr_to_args, "%d%n", &value, &len_arg);
 
     if (len_arg == 0)
     {
@@ -109,7 +134,7 @@ void one_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
         int gap = len_arg;
         len_arg = 0;
 
-        sscanf(ptr_to_args + gap, "%lf%n", &value, &len_arg);
+        sscanf(ptr_to_args + gap, "%d%n", &value, &len_arg);
         if (len_arg > 0)
         {
             printf("Error: invalid syntax at line %lu: %s has given more than 1 argument, but it must have 1 argument\n", line + 1, cmd_name);
@@ -123,9 +148,9 @@ void no_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
     assert(ptr_to_args != NULL);
 
     int len_arg = 0;
-    elem value = NAN;
+    elem value = 0;
 
-    sscanf(ptr_to_args, "%lf%n", &value, &len_arg);
+    sscanf(ptr_to_args, "%d%n", &value, &len_arg);
 
     if (len_arg > 0)
     {

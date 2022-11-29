@@ -16,6 +16,14 @@ struct Text
     size_t filesize;
 };
 
+struct token
+{
+    char * name;
+    int type;
+    int value;
+    int line;
+}:
+
 enum Commands
 {
     HLT = 0,
@@ -29,7 +37,7 @@ enum Commands
 };
 
 
-typedef double elem;
+typedef int elem;
 
 void run_comp(FILE * stream);
 

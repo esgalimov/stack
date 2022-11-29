@@ -12,7 +12,7 @@
 #define stack_ctor(stk, size) stack_ctor_((stk), (size), var_info {#stk, LOCATION})
 #define stack_dump(stk, error_number) stack_dump_((stk), (error_number), __PRETTY_FUNCTION__, __FILE__, __LINE__)
 
-typedef double elem;
+typedef int elem;
 
 struct var_info
 {
@@ -74,6 +74,8 @@ void write_error_to_log(const char * error_string);
 void stack_dump_(stack * stk, int error_number, const char * func, const char * file, int line);
 
 void write_stack_elems(stack * stk);
+
+void write_zeros_to_data(stack * stk, size_t i_start, size_t i_end);
 
 void stack_dtor(stack * stk);
 
