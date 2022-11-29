@@ -2,6 +2,112 @@
 
 void run_comp(FILE * stream)
 {
+    struct Text commands = {};
+    construct(&commands, stream);
+
+    token * toks = (token *) calloc(commands.len * 2, sizeof(token));
+
+    size_t i = 0, i_code = 0;
+    int len_cmd = 0, len_cmd_gap = 0;
+
+    while (i < commands.len)
+    {
+        char cmd[20] = "";
+        len_cmd = 0;
+        len_cmd_gap = 0;
+        sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
+
+        if (is_without_text(cmd))
+        {
+            i++;
+            continue;
+        }
+
+        while (len_cmd > 0)
+        {
+            toks[i_code].name = (char *) calloc(20, sizeof(char));
+
+            if (strcmp(cmd, "push") == 0)
+            {
+                toks[i_code].type = CMD1;
+                toks[i_code].value = PUSH;
+
+            }
+            else if (strcmp(cmd, "add") == 0)
+            {
+                toks[i_code].type = CMD0;
+                toks[i_code].value = ADD;
+            }
+            else if (strcmp(cmd, "sub") == 0)
+            {
+                toks[i_code].type = CMD0;
+                toks[i_code].value = SUB;
+            }
+            else if (strcmp(cmd, "div") == 0)
+            {
+                toks[i_code].type = CMD0;
+                toks[i_code].value = DIV;
+            }
+            else if (strcmp(cmd, "mul") == 0)
+            {
+                toks[i_code].type = CMD0;
+                toks[i_code].value = MUL;
+            }
+            else if (strcmp(cmd, "pop") == 0)
+            {
+                toks[i_code].type = CMD0;
+                toks[i_code].value = POP;
+            }
+            else if (strcmp(cmd, "out") == 0)
+            {
+                toks[i_code].type = CMD0;
+                toks[i_code].value = OUT;
+            }
+            else if (strcmp(cmd, "hlt") == 0)
+            {
+                toks[i_code].type = CMD0;
+                toks[i_code].value = HLT;
+            }
+            else if (str_of_digitis(cmd))
+            {
+                int value = 0;
+                sscanf(cmd, "%d", &value);
+
+                toks[i_code].type = NUM;
+                toks[i_code].value = value;
+            }
+            else
+            {
+                printf("Error: command not found at line %lu\n", i + 1);
+                abort();
+            }
+
+            strcpy(toks[i_code].name, cmd);
+            toks[i_code].line = (int) (i + 1);
+            i_code++;
+
+            len_cmd_gap += len_cmd;
+            len_cmd = 0;
+
+            sscanf(commands.strings[i] + len_cmd_gap, "%s%n", cmd, &len_cmd);
+        }
+        i++;
+    }
+
+    if (check_code(toks, i_code))
+    {
+        write_code_to_file(toks, i_code);
+        printf("Compiled OK\n");
+    }
+
+    free(toks);
+    destruct(&commands);
+}
+
+void write_code_to_file(token * toks, size_t n_cmd)
+{
+    assert(toks != NULL);
+
     FILE * fp = fopen("test.code", "w");
     FILE * fp_bin = fopen("test.bin", "wb");
 
@@ -11,150 +117,87 @@ void run_comp(FILE * stream)
         abort();
     }
 
-    struct Text commands = {};
-    construct(&commands, stream);
+    elem * code = (elem *) calloc(n_cmd, sizeof(elem));
 
-    size_t i = 0;
-    int len_cmd = 0, is_hlt = 0;
-
-    elem * code = (elem *) calloc(commands.len * 2, sizeof(elem));
-    size_t i_code = 0;
-
-    while (i < commands.len)
+    for (size_t i = 0; i < n_cmd; i++)
     {
-        char cmd[20] = "";
-        sscanf(commands.strings[i], "%s%n", cmd, &len_cmd);
+        code[i] = toks[i].value;
+        fprintf(fp, "%d ", toks[i].value);
+    }
 
-        if (is_without_text(cmd))
+    fwrite(code, sizeof(elem), n_cmd, fp_bin);
+
+    fclose(fp);
+    fclose(fp_bin);
+
+    free(code);
+}
+
+int check_code(token * toks, size_t n_cmd)
+{
+    assert(toks != NULL);
+
+    int is_hlt = 0, is_ok = 1;
+
+    for (size_t i = 0; i < n_cmd; i++)
+    {
+        if (toks[i].type == CMD1 && toks[i].value == PUSH)
         {
-            i++;
-            continue;
+            if ((i + 1 < n_cmd && toks[i + 1].type != NUM) || (i + 1 == n_cmd))
+            {
+                printf("Error: invalid syntax at line %d: %s has not given an argument, but it must have 1 argument\n",
+                        toks[i].line, toks[i].name);
+                is_ok = 0;
+            }
+
+            else if (i + 2 < n_cmd && toks[i + 1].type == NUM && toks[i + 2].type == NUM)
+            {
+                printf("Error: invalid syntax at line %d: %s has given more than 1 argument, but it must have 1 argument\n",
+                        toks[i].line, toks[i].name);
+                is_ok = 0;
+            }
         }
-        if (strcmp(cmd, "push") == 0)
+
+        else if (toks[i].type == CMD0)
         {
-            one_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
+            if (i + 1 < n_cmd && toks[i + 1].type == NUM)
+            {
+                printf("Error: invalid syntax at line %d: %s must not have arguments \n",
+                        toks[i].line, toks[i].name);
+                is_ok = 0;
+            }
 
-            elem value = 0;
-            sscanf(commands.strings[i] + len_cmd, "%d", &value);
-            fprintf(fp, "%d %d\n", PUSH, value);
-
-            code[i_code++] = PUSH;
-            code[i_code++] = value;
-
+            else if (toks[i].value == HLT)
+            {
+                is_hlt = 1;
+            }
         }
-        else if (strcmp(cmd, "add") == 0)
-        {
-            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
-            fprintf(fp, "%d\n", ADD);
-
-            code[i_code++] = ADD;
-        }
-        else if (strcmp(cmd, "sub") == 0)
-        {
-            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
-            fprintf(fp, "%d\n", SUB);
-
-            code[i_code++] = SUB;
-        }
-        else if (strcmp(cmd, "div") == 0)
-        {
-            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
-            fprintf(fp, "%d\n", DIV);
-
-            code[i_code++] = DIV;
-        }
-        else if (strcmp(cmd, "mul") == 0)
-        {
-            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
-            fprintf(fp, "%d\n", MUL);
-
-            code[i_code++] = MUL;
-        }
-        else if (strcmp(cmd, "pop") == 0)
-        {
-            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
-            fprintf(fp, "%d\n", POP);
-
-            code[i_code++] = POP;
-        }
-        else if (strcmp(cmd, "out") == 0)
-        {
-            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
-            fprintf(fp, "%d\n", OUT);
-
-            code[i_code++] = OUT;
-        }
-        else if (strcmp(cmd, "hlt") == 0)
-        {
-            no_arg_cmd_verify(commands.strings[i] + len_cmd, i, cmd);
-            fprintf(fp, "%d\n", HLT);
-            is_hlt = 1;
-
-            code[i_code++] = HLT;
-
-            break;
-        }
-        else
-        {
-            printf("Error: command not found at line %lu\n", i + 1);
-            abort();
-        }
-        i++;
     }
 
     if (is_hlt == 0)
     {
         printf("Error: there is no hlt command in programm\n");
-        abort();
+        is_ok = 0;
     }
 
-    fwrite(code, sizeof(elem), i_code, fp_bin);
-    free(code);
-
-    destruct(&commands);
-    fclose(fp);
+    return is_ok;
 }
 
-void one_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
+
+int str_of_digitis(const char * cmd)
 {
-    assert(ptr_to_args != NULL);
+    size_t len_of_cmd = strlen(cmd);
+    size_t i = 0;
 
-    int len_arg = 0;
-    elem value = 0;
+    if (cmd[0] == '-')
+        i = 1;
 
-    sscanf(ptr_to_args, "%d%n", &value, &len_arg);
-
-    if (len_arg == 0)
+    for (; i < len_of_cmd; i++)
     {
-        printf("Error: invalid syntax at line %lu: %s has not given an argument, but it must have 1 argument\n", line + 1, cmd_name);
-        abort();
-    }
-    else
-    {
-        int gap = len_arg;
-        len_arg = 0;
-
-        sscanf(ptr_to_args + gap, "%d%n", &value, &len_arg);
-        if (len_arg > 0)
+        if (isdigit(cmd[i]) == 0)
         {
-            printf("Error: invalid syntax at line %lu: %s has given more than 1 argument, but it must have 1 argument\n", line + 1, cmd_name);
-            abort();
+            return 0;
         }
     }
-}
-
-void no_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name)
-{
-    assert(ptr_to_args != NULL);
-
-    int len_arg = 0;
-    elem value = 0;
-
-    sscanf(ptr_to_args, "%d%n", &value, &len_arg);
-
-    if (len_arg > 0)
-    {
-        printf("Error: invalid syntax at line %lu: %s must not have arguments \n", line + 1, cmd_name);
-        abort();
-    }
+    return 1;
 }

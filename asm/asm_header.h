@@ -22,7 +22,14 @@ struct token
     int type;
     int value;
     int line;
-}:
+};
+
+enum Command_type
+{
+    NUM = -1,
+    CMD0 = 0,
+    CMD1 = 1,
+};
 
 enum Commands
 {
@@ -41,9 +48,11 @@ typedef int elem;
 
 void run_comp(FILE * stream);
 
-void one_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name);
+int str_of_digitis(const char * cmd);
 
-void no_arg_cmd_verify(char * ptr_to_args, size_t line, const char * cmd_name);
+void write_code_to_file(token * toks, size_t n_cmd);
+
+int check_code(token * toks, size_t n_cmd);
 
 //! @brief Function that import text from file and write it into the buffer
 //! in allocated memory with calloc
