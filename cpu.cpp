@@ -4,8 +4,8 @@ void run_cpu(FILE * stream)
 {
     assert(stream != NULL);
 
-    stack stk = {};
-    stack_ctor(&stk, 5);
+    s_cpu cpu = {};
+    stack_ctor(&cpu.stk, 5);
 
     elem num1 = 0;
     elem num2 = 0;
@@ -16,47 +16,47 @@ void run_cpu(FILE * stream)
 
     size_t n_cmd = filesize / sizeof(elem);
 
-    elem * cmd_buffer = (elem *) calloc(n_cmd, sizeof(elem));
-    fread(cmd_buffer, sizeof(elem), n_cmd, stream);
+    cpu.cmd_buffer = (elem *) calloc(n_cmd, sizeof(elem));
+    fread(cpu.cmd_buffer, sizeof(elem), n_cmd, stream);
 
-    for (size_t i = 0; i < n_cmd && cmd_buffer[i] != HLT; i++)
+    for (size_t i = 0; i < n_cmd && cpu.cmd_buffer[i] != HLT; i++)
     {
-        switch (cmd_buffer[i])
+        switch (cpu.cmd_buffer[i])
         {
         case PUSH:
-            stack_push(&stk, cmd_buffer[++i]);
+            stack_push(&cpu.stk, cpu.cmd_buffer[++i]);
             break;
 
         case ADD:
-            stack_pop(&stk, &num1);
-            stack_pop(&stk, &num2);
-            stack_push(&stk, num1 + num2);
+            stack_pop(&cpu.stk, &num1);
+            stack_pop(&cpu.stk, &num2);
+            stack_push(&cpu.stk, num1 + num2);
             break;
 
         case SUB:
-            stack_pop(&stk, &num1);
-            stack_pop(&stk, &num2);
-            stack_push(&stk, num2 - num1);
+            stack_pop(&cpu.stk, &num1);
+            stack_pop(&cpu.stk, &num2);
+            stack_push(&cpu.stk, num2 - num1);
             break;
 
         case DIV:
-            stack_pop(&stk, &num1);
-            stack_pop(&stk, &num2);
-            stack_push(&stk, num2 / num1);
+            stack_pop(&cpu.stk, &num1);
+            stack_pop(&cpu.stk, &num2);
+            stack_push(&cpu.stk, num2 / num1);
             break;
 
         case MUL:
-            stack_pop(&stk, &num1);
-            stack_pop(&stk, &num2);
-            stack_push(&stk, num2 * num1);
+            stack_pop(&cpu.stk, &num1);
+            stack_pop(&cpu.stk, &num2);
+            stack_push(&cpu.stk, num2 * num1);
             break;
 
         case POP:
-            stack_pop(&stk, &num1);
+            stack_pop(&cpu.stk, &num1);
             break;
 
         case OUT:
-            stack_pop(&stk, &num1);
+            stack_pop(&cpu.stk, &num1);
             printf("%d\n", num1);
             break;
 
@@ -67,5 +67,6 @@ void run_cpu(FILE * stream)
         }
     }
 
-    stack_dtor(&stk);
+    stack_dtor(&cpu.stk);
+    free(cpu.cmd_buffer);
 }

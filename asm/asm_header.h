@@ -52,6 +52,8 @@ int str_of_digitis(const char * cmd);
 
 void write_code_to_file(token * toks, size_t n_cmd);
 
+void check_toks_for_size(token * toks, size_t i_code, size_t * size_toks);
+
 int check_code(token * toks, size_t n_cmd);
 
 //! @brief Function that import text from file and write it into the buffer

@@ -7,7 +7,9 @@ void run_comp(FILE * stream)
 
     token * toks = (token *) calloc(commands.len * 2, sizeof(token));
 
-    size_t i = 0, i_code = 0;
+    //int labels[10] = {};
+
+    size_t i = 0, i_code = 0, size_toks = commands.len * 2;
     int len_cmd = 0, len_cmd_gap = 0;
 
     while (i < commands.len)
@@ -90,6 +92,8 @@ void run_comp(FILE * stream)
             len_cmd = 0;
 
             sscanf(commands.strings[i] + len_cmd_gap, "%s%n", cmd, &len_cmd);
+
+            check_toks_for_size(toks, i_code, &size_toks);
         }
         i++;
     }
@@ -200,4 +204,13 @@ int str_of_digitis(const char * cmd)
         }
     }
     return 1;
+}
+
+void check_toks_for_size(token * toks, size_t i_code, size_t * size_toks)
+{
+    if (*size_toks <= i_code)
+    {
+        *size_toks *= 2;
+        toks = (token *) realloc(toks, *size_toks * sizeof(elem));
+    }
 }

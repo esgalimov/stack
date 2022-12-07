@@ -30,6 +30,17 @@ struct stack
     var_info info;
 };
 
+struct s_cpu
+{
+    stack stk;
+    elem * cmd_buffer;
+    elem ax;
+    elem bx;
+    elem cx;
+    elem dx;
+    elem * cpu_ram;
+};
+
 enum Errors
 {
     NULL_DATA = 1,
