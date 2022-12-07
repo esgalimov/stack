@@ -24,8 +24,20 @@ struct token
     int line;
 };
 
+struct s_asm
+{
+    Text commands;
+    token * toks;
+    int * labels;
+    size_t size_toks;
+    int len_cmd;
+    int len_cmd_gap;
+};
+
 enum Command_type
 {
+    UNDEFIND = -3,
+    LABEL = -2,
     NUM = -1,
     CMD0 = 0,
     CMD1 = 1,
@@ -41,20 +53,28 @@ enum Commands
     MUL = 5,
     POP = 6,
     OUT = 7,
+    JMP = 8,
 };
 
+const int NUM_OF_LABELS = 10;
 
 typedef int elem;
 
 void run_comp(FILE * stream);
 
-int str_of_digitis(const char * cmd);
+int str_of_digits(const char * cmd);
 
 void write_code_to_file(token * toks, size_t n_cmd);
 
-void check_toks_for_size(token * toks, size_t i_code, size_t * size_toks);
+void check_toks_for_size(s_asm * asem, size_t i_code);
 
 int check_code(token * toks, size_t n_cmd);
+
+int is_label(const char * cmd);
+
+void asm_ctor(s_asm * asem, FILE * stream);
+
+void asm_dtor(s_asm * asem);
 
 //! @brief Function that import text from file and write it into the buffer
 //! in allocated memory with calloc
