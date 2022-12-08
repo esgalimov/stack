@@ -94,4 +94,8 @@ void test_stack(void);
 
 void run_cpu(FILE * stream);
 
+size_t cpu_ctor(s_cpu * cpu, FILE * stream);
+
+void cpu_dtor(s_cpu * cpu);
+
 #endif
