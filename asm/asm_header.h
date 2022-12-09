@@ -28,7 +28,7 @@ struct s_asm
 {
     Text commands;
     token * toks;
-    int * labels;
+    size_t * labels;
     size_t size_toks;
     int len_cmd;
     int len_cmd_gap;
@@ -56,7 +56,7 @@ enum Commands
     JMP = 8,
 };
 
-const int NUM_OF_LABELS = 10;
+const int N_LABELS = 10;
 
 typedef int elem;
 
@@ -75,6 +75,8 @@ int is_label(const char * cmd);
 void asm_ctor(s_asm * asem, FILE * stream);
 
 void asm_dtor(s_asm * asem);
+
+void labels_init(s_asm * asem, size_t n_cmd);
 
 //! @brief Function that import text from file and write it into the buffer
 //! in allocated memory with calloc

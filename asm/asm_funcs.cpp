@@ -65,6 +65,11 @@ void run_comp(FILE * stream)
                 asem.toks[i_code].type = CMD0;
                 asem.toks[i_code].value = HLT;
             }
+            else if (strcmp(cmd, "jmp") == 0)
+            {
+                asem.toks[i_code].type = CMD1;
+                asem.toks[i_code].value = JMP;
+            }
             else if (str_of_digits(cmd))
             {
                 int value = 0;
@@ -100,7 +105,15 @@ void run_comp(FILE * stream)
         i++;
     }
 
-    //labels_init(toks, labels);
+    labels_init(&asem, i_code);
+
+    //---------------------------------------------------------
+    for (int x = 0; x < N_LABELS; x++)
+    {
+        printf("%lu ", asem.labels[x]);
+    }
+    printf("\n");
+    //---------------------------------------------------------
 
     if (check_code(asem.toks, i_code))
     {
@@ -247,7 +260,7 @@ void asm_ctor(s_asm * asem, FILE * stream)
 
     asem->toks = (token *) calloc(asem->commands.len * 2, sizeof(token));
 
-    asem->labels = (int *) calloc(NUM_OF_LABELS, sizeof(int));
+    asem->labels = (size_t *) calloc(N_LABELS, sizeof(size_t));
 
     asem->size_toks = asem->commands.len * 2;
 
@@ -270,4 +283,26 @@ void asm_dtor(s_asm * asem)
     asem->labels = NULL;
     asem->toks = NULL;
 
+}
+
+void labels_init(s_asm * asem, size_t n_cmd)
+{
+    size_t label_found = 0;
+
+    if (asem->toks[0].type == LABEL)
+    {
+        asem->labels[asem->toks[0].value] = 0;
+        label_found++;
+    }
+
+    for (size_t i = 1; i < n_cmd; i++)
+    {
+        if (asem->toks[i].type == LABEL)
+        {
+            if (asem->toks[i - 1].type == CMD1 && asem->toks[i - 1].value == JMP)
+                continue;
+
+            asem->labels[asem->toks[i].value] = i - label_found;
+        }
+    }
 }
