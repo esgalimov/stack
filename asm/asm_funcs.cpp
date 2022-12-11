@@ -110,12 +110,11 @@ void run_comp(FILE * stream)
     //---------------------------------------------------------
     for (int x = 0; x < N_LABELS; x++)
     {
-        printf("%lu ", asem.labels[x]);
+        printf("%d - %lu\n", asem.labels[x].value, asem.labels[x].cnt);
     }
-    printf("\n");
     //---------------------------------------------------------
 
-    if (check_code(asem.toks, i_code))
+    if (check_code(&asem, i_code))
     {
         write_code_to_file(asem.toks, i_code);
         printf("Compiled OK\n");
@@ -153,46 +152,52 @@ void write_code_to_file(token * toks, size_t n_cmd)
     free(code);
 }
 
-int check_code(token * toks, size_t n_cmd)
+int check_code(s_asm * asem, size_t n_cmd)
 {
-    assert(toks != NULL);
+    assert(asem != NULL);
 
     int is_hlt = 0, is_ok = 1;
 
     for (size_t i = 0; i < n_cmd; i++)
     {
-        if (toks[i].type == UNDEFIND)
+        if (asem->toks[i].type == UNDEFIND)
         {
-            printf("Error: command %s not found at line %lu\n", toks[i].name, i + 1);
+            printf("Error: command %s not found at line %lu\n", asem->toks[i].name, i + 1);
             is_ok = 0;
         }
-        else if (toks[i].type == CMD1 && toks[i].value == PUSH)
+
+        else if (asem->toks[i].type == CMD1 && asem->toks[i].value == PUSH)
         {
-            if ((i + 1 < n_cmd && toks[i + 1].type != NUM) || (i + 1 == n_cmd))
+            if ((i + 1 < n_cmd && asem->toks[i + 1].type != NUM) || (i + 1 == n_cmd))
             {
                 printf("Error: invalid syntax at line %d: %s has not given an argument, but it must have 1 argument\n",
-                        toks[i].line, toks[i].name);
+                        asem->toks[i].line, asem->toks[i].name);
                 is_ok = 0;
             }
 
-            else if (i + 2 < n_cmd && toks[i + 1].type == NUM && toks[i + 2].type == NUM)
+            else if (i + 2 < n_cmd && asem->toks[i + 1].type == NUM && asem->toks[i + 2].type == NUM)
             {
                 printf("Error: invalid syntax at line %d: %s has given more than 1 argument, but it must have 1 argument\n",
-                        toks[i].line, toks[i].name);
+                        asem->toks[i].line, asem->toks[i].name);
                 is_ok = 0;
             }
         }
 
-        else if (toks[i].type == CMD0)
+        else if (asem->toks[i].type == LABEL)
         {
-            if (i + 1 < n_cmd && toks[i + 1].type == NUM)
+
+        }
+
+        else if (asem->toks[i].type == CMD0)
+        {
+            if (i + 1 < n_cmd && asem->toks[i + 1].type == NUM)
             {
                 printf("Error: invalid syntax at line %d: %s must not have arguments \n",
-                        toks[i].line, toks[i].name);
+                        asem->toks[i].line, asem->toks[i].name);
                 is_ok = 0;
             }
 
-            else if (toks[i].value == HLT)
+            else if (asem->toks[i].value == HLT)
             {
                 is_hlt = 1;
             }
@@ -260,7 +265,10 @@ void asm_ctor(s_asm * asem, FILE * stream)
 
     asem->toks = (token *) calloc(asem->commands.len * 2, sizeof(token));
 
-    asem->labels = (size_t *) calloc(N_LABELS, sizeof(size_t));
+    asem->labels = (label *) calloc(N_LABELS, sizeof(label));
+
+    for (int i = 0; i < N_LABELS; i++)
+        asem->labels[i].value = -1;
 
     asem->size_toks = asem->commands.len * 2;
 
@@ -285,24 +293,29 @@ void asm_dtor(s_asm * asem)
 
 }
 
-void labels_init(s_asm * asem, size_t n_cmd)
+void labels_init(s_asm * asem, size_t n_toks)
 {
     size_t label_found = 0;
 
     if (asem->toks[0].type == LABEL)
     {
-        asem->labels[asem->toks[0].value] = 0;
+        asem->labels[asem->toks[0].value].value = 0;
+        asem->labels[asem->toks[0].value].cnt++;
         label_found++;
     }
 
-    for (size_t i = 1; i < n_cmd; i++)
+    size_t i = 0;
+
+    for (i = 1; i < n_toks; i++)
     {
         if (asem->toks[i].type == LABEL)
         {
             if (asem->toks[i - 1].type == CMD1 && asem->toks[i - 1].value == JMP)
                 continue;
 
-            asem->labels[asem->toks[i].value] = i - label_found;
+            asem->labels[asem->toks[i].value].value = (int) (i - label_found);
+            asem->labels[asem->toks[i].value].cnt++;
+            label_found++;
         }
     }
 }

@@ -24,11 +24,17 @@ struct token
     int line;
 };
 
+struct label
+{
+    int value;
+    size_t cnt;
+};
+
 struct s_asm
 {
     Text commands;
     token * toks;
-    size_t * labels;
+    label * labels;
     size_t size_toks;
     int len_cmd;
     int len_cmd_gap;
@@ -68,7 +74,7 @@ void write_code_to_file(token * toks, size_t n_cmd);
 
 void check_toks_for_size(s_asm * asem, size_t i_code);
 
-int check_code(token * toks, size_t n_cmd);
+int check_code(s_asm * asem, size_t n_cmd);
 
 int is_label(const char * cmd);
 
@@ -76,7 +82,13 @@ void asm_ctor(s_asm * asem, FILE * stream);
 
 void asm_dtor(s_asm * asem);
 
-void labels_init(s_asm * asem, size_t n_cmd);
+//! @brief Function for finding labels in tokens and count each one,
+//! write label's value and number of it to labels array in assembler
+//!
+//! @param [out] asem - pointer to assembler
+//! @param [in] n_cmd - number of tokens
+
+void labels_init(s_asm * asem, size_t n_toks);
 
 //! @brief Function that import text from file and write it into the buffer
 //! in allocated memory with calloc
