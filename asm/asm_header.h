@@ -48,7 +48,7 @@ enum Command_type
     NUM = -1,
     CMD0 = 0,
     CMD1 = 1,
-    REG = 0,
+    REG = 2,
 };
 
 enum Commands
@@ -66,6 +66,7 @@ enum Commands
     BX = 10,
     CX = 11,
     DX = 12,
+    PUSH_REG = 13,
 };
 
 const int N_LABELS = 10;
@@ -88,7 +89,7 @@ void asm_ctor(s_asm * asem, FILE * stream);
 
 void asm_dtor(s_asm * asem);
 
-void make_label_jmp(s_asm * asem, size_t n_toks);
+void make_label_jmp_push_reg(s_asm * asem, size_t n_toks);
 
 //! @brief Function for finding labels in tokens and count each one,
 //! write label's value and number of it to labels array in assembler

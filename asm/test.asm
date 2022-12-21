@@ -8,7 +8,7 @@ push 1
 push -7
 mul
 
-
+push ax
 mul
 
 add
