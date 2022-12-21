@@ -42,11 +42,13 @@ struct s_asm
 
 enum Command_type
 {
-    UNDEFIND = -3,
+    UNDEFIND = -4,
+    LABEL_JMP = -3,
     LABEL = -2,
     NUM = -1,
     CMD0 = 0,
     CMD1 = 1,
+    REG = 0,
 };
 
 enum Commands
@@ -60,6 +62,10 @@ enum Commands
     POP = 6,
     OUT = 7,
     JMP = 8,
+    AX = 9,
+    BX = 10,
+    CX = 11,
+    DX = 12,
 };
 
 const int N_LABELS = 10;
@@ -81,6 +87,8 @@ int is_label(const char * cmd);
 void asm_ctor(s_asm * asem, FILE * stream);
 
 void asm_dtor(s_asm * asem);
+
+void make_label_jmp(s_asm * asem, size_t n_toks);
 
 //! @brief Function for finding labels in tokens and count each one,
 //! write label's value and number of it to labels array in assembler

@@ -86,6 +86,11 @@ void run_comp(FILE * stream)
                 asem.toks[i_code].type = LABEL;
                 asem.toks[i_code].value = label;
             }
+            else if (strcmp(cmd, "ax"))
+            {
+                asem.toks[i_code].type = REG;
+                asem.toks[i_code].value = AX;
+            }
             else
             {
                 asem.toks[i_code].type = UNDEFIND;
@@ -116,6 +121,8 @@ void run_comp(FILE * stream)
 
     if (check_code(&asem, i_code))
     {
+        make_label_jmp(&asem, i_code);
+
         write_code_to_file(asem.toks, i_code);
         printf("Compiled OK\n");
     }
@@ -140,8 +147,11 @@ void write_code_to_file(token * toks, size_t n_cmd)
 
     for (size_t i = 0; i < n_cmd; i++)
     {
-        code[i] = toks[i].value;
-        fprintf(fp, "%d ", toks[i].value);
+        if (toks[i].type != LABEL)
+        {
+            code[i] = toks[i].value;
+            fprintf(fp, "%d ", toks[i].value);
+        }
     }
 
     fwrite(code, sizeof(elem), n_cmd, fp_bin);
@@ -183,9 +193,42 @@ int check_code(s_asm * asem, size_t n_cmd)
             }
         }
 
+        else if (asem->toks[i].type == CMD1 && asem->toks[i].value == JMP)
+        {
+            if ((i + 1 < n_cmd && asem->toks[i + 1].type != LABEL) || (i + 1) == n_cmd)
+            {
+                printf("Error: invalid syntax at line %d: %s has not given an argument, but it must have 1 argument\n",
+                        asem->toks[i].line, asem->toks[i].name);
+                is_ok = 0;
+            }
+            else if (i + 2 < n_cmd && asem->toks[i + 1].type == LABEL && asem->toks[i + 2].type == LABEL)
+            {
+                printf("Error: invalid syntax at line %d: %s has given more than 1 argument, but it must have 1 argument\n",
+                        asem->toks[i].line, asem->toks[i].name);
+                is_ok = 0;
+            }
+            else
+            {
+                if (asem->labels[asem->toks[i + 1].value].value == -1)
+                {
+                    printf("Error: label doesn't exist at line %d\n", asem->toks[i].line);
+                    is_ok = 0;
+                }
+            }
+        }
+
         else if (asem->toks[i].type == LABEL)
         {
+            if (asem->labels[asem->toks[i].value].value != -1 && asem->labels[asem->toks[i].value].cnt == 0)
+            {
+                printf("Warning: label at line %d is not used\n", asem->toks[i].line);
+            }
 
+            else if (asem->labels[asem->toks[i].value].cnt > 1)
+            {
+                printf("Error: there are more than one label to jump at line %d\n", asem->toks[i].line);
+                is_ok = 0;
+            }
         }
 
         else if (asem->toks[i].type == CMD0)
@@ -316,6 +359,18 @@ void labels_init(s_asm * asem, size_t n_toks)
             asem->labels[asem->toks[i].value].value = (int) (i - label_found);
             asem->labels[asem->toks[i].value].cnt++;
             label_found++;
+        }
+    }
+}
+
+void make_label_jmp(s_asm * asem, size_t n_toks)
+{
+    for (size_t i = 0; i < n_toks; i++)
+    {
+        if (asem->toks[i].type == CMD1 && asem->toks[i].value == JMP)
+        {
+            asem->toks[i + 1].type = LABEL_JMP;
+            asem->toks[i + 1].value = asem->labels[asem->toks[i + 1].value].value;
         }
     }
 }

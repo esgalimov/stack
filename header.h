@@ -60,6 +60,7 @@ enum Commands
     MUL = 5,
     POP = 6,
     OUT = 7,
+    JMP = 8;
 };
 
 const int MIN_CAPACITY = 8;
