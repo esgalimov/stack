@@ -372,5 +372,10 @@ void make_label_jmp_push_reg(s_asm * asem, size_t n_toks)
             asem->toks[i + 1].type = LABEL_JMP;
             asem->toks[i + 1].value = asem->labels[asem->toks[i + 1].value].value;
         }
+
+        if (asem->toks[i].type == CMD1 && asem->toks[i].value == PUSH && asem->toks[i + 1].type == REG)
+        {
+            asem->toks[i].value = PUSH_REG;
+        }
     }
 }
