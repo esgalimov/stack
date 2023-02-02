@@ -1,6 +1,6 @@
 #include "header.h"
 
-void run_cpu(FILE * stream)
+int run_cpu(FILE * stream)
 {
     assert(stream != NULL);
 
@@ -10,7 +10,7 @@ void run_cpu(FILE * stream)
     elem num1 = 0;
     elem num2 = 0;
 
-    for (size_t i = 0; i < n_cmd && cpu.cmd_buffer[i] != HLT; i++)
+    for (size_t i = 0; i < n_cmd; i++)
     {
         switch (cpu.cmd_buffer[i])
         {
@@ -51,14 +51,24 @@ void run_cpu(FILE * stream)
             printf("%d\n", num1);
             break;
 
+        case JMP:
+            i = (size_t) (cpu.cmd_buffer[i + 1] - 1);
+            printf("Jumped to %lu\n", i);
+            break;
+
+        case HLT:
+            printf("%lu hlt\n", i);
+            return 0;
+
         default:
-            printf("Error: undefind command\n");
+            printf("Error: undefind command: %d\n", cpu.cmd_buffer[i]);
             abort();
             break;
         }
     }
 
     cpu_dtor(&cpu);
+    return 0;
 }
 
 size_t cpu_ctor(s_cpu * cpu, FILE * stream)

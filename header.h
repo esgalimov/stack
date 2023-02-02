@@ -60,7 +60,18 @@ enum Commands
     MUL = 5,
     POP = 6,
     OUT = 7,
-    JMP = 8;
+    JMP = 8,
+    JB = 9,
+    JBE = 10,
+    JA = 11,
+    JAE = 12,
+    JE = 13,
+    JNE = 14,
+    AX = 15,
+    BX = 16,
+    CX = 17,
+    DX = 18,
+    PUSH_REG = 19,
 };
 
 const int MIN_CAPACITY = 8;
@@ -93,7 +104,7 @@ void stack_dtor(stack * stk);
 
 void test_stack(void);
 
-void run_cpu(FILE * stream);
+int run_cpu(FILE * stream);
 
 size_t cpu_ctor(s_cpu * cpu, FILE * stream);
 

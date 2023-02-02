@@ -62,11 +62,17 @@ enum Commands
     POP = 6,
     OUT = 7,
     JMP = 8,
-    AX = 9,
-    BX = 10,
-    CX = 11,
-    DX = 12,
-    PUSH_REG = 13,
+    JB = 9,
+    JBE = 10,
+    JA = 11,
+    JAE = 12,
+    JE = 13,
+    JNE = 14,
+    AX = 15,
+    BX = 16,
+    CX = 17,
+    DX = 18,
+    PUSH_REG = 19,
 };
 
 const int N_LABELS = 10;
@@ -107,6 +113,8 @@ void labels_init(s_asm * asem, size_t n_toks);
 //!
 //! @return Pointer to array with pointers to string
 //! @note Function use get_ptrs to make array with pointers to strings
+
+int count_labels_not_after_jump(s_asm * asem, int i_label);
 
 char ** import_text(struct Text * book, FILE * stream);
 
