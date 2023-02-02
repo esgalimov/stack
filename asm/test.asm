@@ -1,12 +1,15 @@
 push 1
 push 2
+call :1
 
-ja :0
-
-push 3
+out
 out
 
 hlt
 
-:0
-hlt
+:1
+in
+in
+mul
+out
+ret

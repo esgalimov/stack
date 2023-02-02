@@ -100,6 +100,21 @@ void run_comp(FILE * stream)
                 asem.toks[i_code].type = CMD1;
                 asem.toks[i_code].value = JNE;
             }
+            else if (strcmp(cmd, "call") == 0)
+            {
+                asem.toks[i_code].type = CMD1;
+                asem.toks[i_code].value = CALL;
+            }
+            else if (strcmp(cmd, "ret") == 0)
+            {
+                asem.toks[i_code].type = CMD0;
+                asem.toks[i_code].value = RET;
+            }
+            else if (strcmp(cmd, "in") == 0)
+            {
+                asem.toks[i_code].type = CMD0;
+                asem.toks[i_code].value = IN;
+            }
             else if (str_of_digits(cmd))
             {
                 int value = 0;
@@ -423,5 +438,5 @@ void make_label_jmp_push_reg(s_asm * asem, size_t n_toks)
 
 int check_for_jump(int value)
 {
-    return (value >= JMP && value <= JNE);
+    return (value >= JMP && value <= CALL);
 }

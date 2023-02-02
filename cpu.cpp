@@ -127,6 +127,22 @@ int run_cpu(FILE * stream)
 
             break;
 
+        case CALL:
+            stack_push(&cpu.stk, (elem) (i + 1));
+            i = (size_t) (cpu.cmd_buffer[i + 1] - 1);
+
+            break;
+
+        case RET:
+            stack_pop(&cpu.stk, &num1);
+            i = (size_t) num1;
+            break;
+
+        case IN:
+            scanf("%d", &num1);
+            stack_push(&cpu.stk, num1);
+            break;
+
         case HLT:
             cpu_dtor(&cpu);
             printf("%lu hlt \n", i);

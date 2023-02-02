@@ -68,11 +68,14 @@ enum Commands
     JAE = 12,
     JE = 13,
     JNE = 14,
-    AX = 15,
-    BX = 16,
-    CX = 17,
-    DX = 18,
-    PUSH_REG = 19,
+    CALL = 15,
+    RET = 16,
+    AX = 17,
+    BX = 18,
+    CX = 19,
+    DX = 20,
+    PUSH_REG = 21,
+    IN = 22,
 };
 
 const int N_LABELS = 10;
