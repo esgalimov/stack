@@ -143,6 +143,42 @@ int run_cpu(FILE * stream)
             stack_push(&cpu.stk, num1);
             break;
 
+        case PUSH_REG:
+            switch (cpu.cmd_buffer[++i])
+            {
+                case AX:
+                    stack_push(&cpu.stk, cpu.ax);
+                    break;
+                case BX:
+                    stack_push(&cpu.stk, cpu.bx);
+                    break;
+                case CX:
+                    stack_push(&cpu.stk, cpu.cx);
+                    break;
+                case DX:
+                    stack_push(&cpu.stk, cpu.dx);
+                    break;
+            }
+            break;
+
+        case POP_REG:
+            switch (cpu.cmd_buffer[++i])
+            {
+                case AX:
+                    stack_pop(&cpu.stk, &cpu.ax);
+                    break;
+                case BX:
+                    stack_pop(&cpu.stk, &cpu.bx);
+                    break;
+                case CX:
+                    stack_pop(&cpu.stk, &cpu.cx);
+                    break;
+                case DX:
+                    stack_pop(&cpu.stk, &cpu.dx);
+                    break;
+            }
+            break;
+
         case HLT:
             cpu_dtor(&cpu);
             printf("%lu hlt \n", i);

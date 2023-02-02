@@ -75,7 +75,8 @@ enum Commands
     CX = 19,
     DX = 20,
     PUSH_REG = 21,
-    IN = 22,
+    POP_REG = 22,
+    IN = 23,
 };
 
 const int N_LABELS = 10;

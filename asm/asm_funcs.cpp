@@ -296,6 +296,12 @@ int check_code(s_asm * asem, size_t n_cmd)
                 is_ok = 0;
             }
 
+            else if (i + 2 < n_cmd && asem->toks[i].value == POP && asem->toks[i + 1].type == REG && asem->toks[i + 2].value == REG)
+            {
+                printf("Error: invalid syntax at line %d: %s can not have more than one register as argument \n",
+                    asem->toks[i].line, asem->toks[i].name);
+            }
+
             else if (asem->toks[i].value == HLT)
             {
                 is_hlt = 1;
@@ -432,6 +438,12 @@ void make_label_jmp_push_reg(s_asm * asem, size_t n_toks)
         if (asem->toks[i].type == CMD1 && asem->toks[i].value == PUSH && asem->toks[i + 1].type == REG)
         {
             asem->toks[i].value = PUSH_REG;
+        }
+
+        if (asem->toks[i].type == CMD0 && asem->toks[i].value == POP && asem->toks[i + 1].type == REG)
+        {
+            asem->toks[i].value = POP_REG;
+            asem->toks[i].type = CMD1;
         }
     }
 }

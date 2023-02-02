@@ -1,15 +1,13 @@
-push 1
-push 2
-call :1
+push 89
+push 78
+
+pop ax
+pop cx
+
+push ax
+push cx
 
 out
 out
 
 hlt
-
-:1
-in
-in
-mul
-out
-ret
