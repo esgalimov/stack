@@ -97,6 +97,8 @@ void asm_dtor(s_asm * asem);
 
 void make_label_jmp_push_reg(s_asm * asem, size_t n_toks);
 
+int check_for_jump(int value);
+
 //! @brief Function for finding labels in tokens and count each one,
 //! write label's value and number of it to labels array in assembler
 //!
@@ -113,8 +115,6 @@ void labels_init(s_asm * asem, size_t n_toks);
 //!
 //! @return Pointer to array with pointers to string
 //! @note Function use get_ptrs to make array with pointers to strings
-
-int count_labels_not_after_jump(s_asm * asem, int i_label);
 
 char ** import_text(struct Text * book, FILE * stream);
 

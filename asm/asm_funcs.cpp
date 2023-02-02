@@ -70,6 +70,36 @@ void run_comp(FILE * stream)
                 asem.toks[i_code].type = CMD1;
                 asem.toks[i_code].value = JMP;
             }
+            else if (strcmp(cmd, "jb") == 0)
+            {
+                asem.toks[i_code].type = CMD1;
+                asem.toks[i_code].value = JB;
+            }
+            else if (strcmp(cmd, "jbe") == 0)
+            {
+                asem.toks[i_code].type = CMD1;
+                asem.toks[i_code].value = JBE;
+            }
+            else if (strcmp(cmd, "ja") == 0)
+            {
+                asem.toks[i_code].type = CMD1;
+                asem.toks[i_code].value = JA;
+            }
+            else if (strcmp(cmd, "jae") == 0)
+            {
+                asem.toks[i_code].type = CMD1;
+                asem.toks[i_code].value = JAE;
+            }
+            else if (strcmp(cmd, "je") == 0)
+            {
+                asem.toks[i_code].type = CMD1;
+                asem.toks[i_code].value = JE;
+            }
+            else if (strcmp(cmd, "jne") == 0)
+            {
+                asem.toks[i_code].type = CMD1;
+                asem.toks[i_code].value = JNE;
+            }
             else if (str_of_digits(cmd))
             {
                 int value = 0;
@@ -214,7 +244,7 @@ int check_code(s_asm * asem, size_t n_cmd)
             }
         }
 
-        else if (asem->toks[i].type == CMD1 && asem->toks[i].value == JMP)
+        else if (asem->toks[i].type == CMD1 && check_for_jump(asem->toks[i].value))
         {
             if ((i + 1 < n_cmd && asem->toks[i + 1].type != LABEL) || (i + 1) == n_cmd)
             {
@@ -222,12 +252,7 @@ int check_code(s_asm * asem, size_t n_cmd)
                         asem->toks[i].line, asem->toks[i].name);
                 is_ok = 0;
             }
-            // else if (i + 2 < n_cmd && asem->toks[i + 1].type == LABEL && asem->toks[i + 2].type == LABEL)
-            // {
-            //     printf("Error: invalid syntax at line %d: %s has given more than 1 argument, but it must have 1 argument\n",
-            //             asem->toks[i].line, asem->toks[i].name);
-            //     is_ok = 0;
-            // }
+
             else
             {
                 if (asem->labels[asem->toks[i + 1].value].value == -1)
@@ -369,7 +394,7 @@ void labels_init(s_asm * asem, size_t n_toks)
     {
         if (asem->toks[i].type == LABEL)
         {
-            if (asem->toks[i - 1].type == CMD1 && asem->toks[i - 1].value == JMP)
+            if (asem->toks[i - 1].type == CMD1 && check_for_jump(asem->toks[i - 1].value))
                 continue;
 
             asem->labels[asem->toks[i].value].value = (int) (i - label_found);
@@ -381,14 +406,9 @@ void labels_init(s_asm * asem, size_t n_toks)
 
 void make_label_jmp_push_reg(s_asm * asem, size_t n_toks)
 {
-    for (int i = 0; i < N_LABELS; i++)
-    {
-        printf("%d\n", asem->labels[i].value);
-    }
-
     for (size_t i = 0; i < n_toks; i++)
     {
-        if (asem->toks[i].type == CMD1 && asem->toks[i].value == JMP)
+        if (asem->toks[i].type == CMD1 && check_for_jump(asem->toks[i].value))
         {
             asem->toks[i + 1].type = LABEL_JMP;
             asem->toks[i + 1].value = asem->labels[asem->toks[i + 1].value].value;
@@ -399,4 +419,9 @@ void make_label_jmp_push_reg(s_asm * asem, size_t n_toks)
             asem->toks[i].value = PUSH_REG;
         }
     }
+}
+
+int check_for_jump(int value)
+{
+    return (value >= JMP && value <= JNE);
 }
