@@ -194,8 +194,8 @@ void write_code_to_file(token * toks, size_t n_cmd)
 {
     assert(toks != NULL);
 
-    FILE * fp = fopen("test.code", "w");
-    FILE * fp_bin = fopen("test.bin", "wb");
+    FILE * fp = fopen("../code/test.code", "w");
+    FILE * fp_bin = fopen("../code/test.bin", "wb");
 
     if (fp == NULL || fp_bin == NULL)
     {
@@ -296,7 +296,7 @@ int check_code(s_asm * asem, size_t n_cmd)
                 is_ok = 0;
             }
 
-            else if (i + 2 < n_cmd && asem->toks[i].value == POP && asem->toks[i + 1].type == REG && asem->toks[i + 2].value == REG)
+            else if (i + 2 < n_cmd && asem->toks[i].value == POP && asem->toks[i + 1].type == REG && asem->toks[i + 2].type == REG)
             {
                 printf("Error: invalid syntax at line %d: %s can not have more than one register as argument \n",
                     asem->toks[i].line, asem->toks[i].name);

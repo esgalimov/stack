@@ -4,7 +4,7 @@ FILE * log_file = NULL;
 
 int main(void)
 {
-    log_file = fopen("log.txt", "w");
+    log_file = fopen("../cpu/logs/log.txt", "w");
     if (log_file == NULL)
     {
         printf("Can't open log file!");
@@ -13,7 +13,7 @@ int main(void)
 
     //test_stack();
 
-    FILE * fp_bin = fopen("./asm/test.bin", "rb");
+    FILE * fp_bin = fopen("../code/test.bin", "rb");
     if (fp_bin == NULL)
     {
         printf("Can not open file\n");

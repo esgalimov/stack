@@ -3,7 +3,7 @@
 int main(void)
 {
     FILE * fp = NULL;
-    fp = fopen("test.asm", "r");
+    fp = fopen("../test.asm", "r");
     if (fp == NULL)
     {
         printf("Can't open file");

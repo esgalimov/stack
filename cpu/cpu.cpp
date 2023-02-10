@@ -181,7 +181,6 @@ int run_cpu(FILE * stream)
 
         case HLT:
             cpu_dtor(&cpu);
-            printf("%lu hlt \n", i);
             return 0;
 
         default:
