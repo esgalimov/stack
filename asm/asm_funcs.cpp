@@ -117,11 +117,11 @@ void run_comp(FILE * stream)
             }
             else if (str_of_digits(cmd))
             {
-                int value = 0;
-                sscanf(cmd, "%d", &value);
+                double value = 0;
+                sscanf(cmd, "%lf", &value);
 
                 asem.toks[i_code].type = NUM;
-                asem.toks[i_code].value = value;
+                asem.toks[i_code].value = int (value * ACCURACY);
             }
             else if (is_label(cmd))
             {
@@ -151,6 +151,21 @@ void run_comp(FILE * stream)
                 asem.toks[i_code].type = REG;
                 asem.toks[i_code].value = DX;
             }
+            else if (strcmp(cmd, "sqrt") == 0)
+            {
+                asem.toks[i_code].type = CMD0;
+                asem.toks[i_code].value = SQRT;
+            }
+            else if (strcmp(cmd, "noroots") == 0)
+            {
+                asem.toks[i_code].type = CMD0;
+                asem.toks[i_code].value = NOROOTS;
+            }
+            else if (strcmp(cmd, "allnum") == 0)
+            {
+                asem.toks[i_code].type = CMD0;
+                asem.toks[i_code].value = ALLNUM;
+            }
             else
             {
                 asem.toks[i_code].type = UNDEFIND;
@@ -171,13 +186,6 @@ void run_comp(FILE * stream)
     }
 
     labels_init(&asem, i_code);
-
-    //---------------------------------------------------------
-    // for (int x = 0; x < N_LABELS; x++)
-    // {
-    //     printf("%d - %lu\n", asem.labels[x].value, asem.labels[x].cnt);
-    // }
-    //---------------------------------------------------------
 
     if (check_code(&asem, i_code))
     {

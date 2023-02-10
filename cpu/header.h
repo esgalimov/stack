@@ -76,9 +76,13 @@ enum Commands
     PUSH_REG = 21,
     POP_REG = 22,
     IN = 23,
+    SQRT = 24,
+    NOROOTS = 25,
+    ALLNUM = 26,
 };
 
 const int MIN_CAPACITY = 8;
+const int ACCURACY = 100;
 
 extern FILE * log_file;
 

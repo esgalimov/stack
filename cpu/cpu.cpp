@@ -7,8 +7,11 @@ int run_cpu(FILE * stream)
     s_cpu cpu = {};
     size_t n_cmd = cpu_ctor(&cpu, stream);
 
-    elem num1 = 0;
-    elem num2 = 0;
+    double num = NAN;
+    elem num1 = 0, num2 = 0;
+
+    //double d_num1 = NAN, d_num2 = NAN;
+
 
     for (size_t i = 0; i < n_cmd; i++)
     {
@@ -33,13 +36,13 @@ int run_cpu(FILE * stream)
         case DIV:
             stack_pop(&cpu.stk, &num1);
             stack_pop(&cpu.stk, &num2);
-            stack_push(&cpu.stk, num2 / num1);
+            stack_push(&cpu.stk, (elem) (((double) num2 / (double) num1) * ACCURACY));
             break;
 
         case MUL:
             stack_pop(&cpu.stk, &num1);
             stack_pop(&cpu.stk, &num2);
-            stack_push(&cpu.stk, num2 * num1);
+            stack_push(&cpu.stk, (num2 * num1) / ACCURACY);
             break;
 
         case POP:
@@ -48,7 +51,7 @@ int run_cpu(FILE * stream)
 
         case OUT:
             stack_pop(&cpu.stk, &num1);
-            printf("%d\n", num1);
+            printf("OUT: %.2lf\n", (double) num1 / ACCURACY);
             break;
 
         case JMP:
@@ -139,8 +142,8 @@ int run_cpu(FILE * stream)
             break;
 
         case IN:
-            scanf("%d", &num1);
-            stack_push(&cpu.stk, num1);
+            scanf("%lf", &num);
+            stack_push(&cpu.stk, (elem) (num * ACCURACY));
             break;
 
         case PUSH_REG:
@@ -177,6 +180,28 @@ int run_cpu(FILE * stream)
                     stack_pop(&cpu.stk, &cpu.dx);
                     break;
             }
+            break;
+
+        case SQRT:
+            stack_pop(&cpu.stk, &num1);
+
+            if (num1 < 0)
+            {
+                printf("Runtime error: try to sqrt number below zero\n");
+                cpu_dtor(&cpu);
+
+                return 2;
+            }
+            stack_push(&cpu.stk, (elem) (sqrt(num1) * sqrt(ACCURACY)));
+
+            break;
+
+        case NOROOTS:
+            printf("no roots\n");
+            break;
+
+        case ALLNUM:
+            printf("all numbers are roots\n");
             break;
 
         case HLT:

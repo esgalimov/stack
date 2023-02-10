@@ -77,9 +77,13 @@ enum Commands
     PUSH_REG = 21,
     POP_REG = 22,
     IN = 23,
+    SQRT = 24,
+    NOROOTS = 25,
+    ALLNUM = 26,
 };
 
 const int N_LABELS = 10;
+const int ACCURACY = 100;
 
 typedef int elem;
 
@@ -99,7 +103,20 @@ void asm_ctor(s_asm * asem, FILE * stream);
 
 void asm_dtor(s_asm * asem);
 
+//! @brief If after one of jump commands (jmp, jb, jbe, ja, jae, je, jne, call) locate label,
+//! @brief function change label's type from LABEL to LABEL_JMP (type LABEL_JMP will be written into code array)
+//! @brief If after pop or push locate register (type - REG), function change them type (PUSH -> PUSH_REG, POP -> POP_REG)
+//!
+//! @param [in] asem - ptr to assembler struct
+//! @param [in] n_toks - number of tokens
+
 void make_label_jmp_push_reg(s_asm * asem, size_t n_toks);
+
+//! @brief Check is token's value JMP, JB, JBE, JA, JAE, JE, JNE, CALL
+//!
+//! @param [in] value - token's value
+//!
+//! @return 1 if one of values in brief, else - 0
 
 int check_for_jump(int value);
 
