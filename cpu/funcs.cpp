@@ -40,45 +40,35 @@ int stack_verify(stack * stk)
 
 void error_number_translate(int error_number)
 {
-    int current = 0;
-    int current_error = 0;
-    while (error_number >= 1)
+    size_t i = 0;
+
+    while (i < ERRORS_COUNT)
     {
-        if (error_number & 1)
+        switch (error_number & (1 << i))
         {
-            current_error = power_two(current);
-
-            switch (current_error)
-            {
-                case NULL_DATA:
-                    write_error_to_log("Data have NULL pointer");
-                    break;
-                case SIZE_ERROR:
-                    write_error_to_log("Size is lower than 0");
-                    break;
-                case CAP_ERROR:
-                    write_error_to_log("Capacity is lower than 0");
-                    break;
-                case SIZE_CAP_ERROR:
-                    write_error_to_log("Size bigger than capacity");
-                    break;
-                case POP_ERROR:
-                    write_error_to_log("Try to pop empty stack");
-                    break;
-                default:
-                    write_error_to_log("Unknown error");
-                    break;
-            }
+            case 0:
+                break;
+            case NULL_DATA:
+                fprintf(log_file, "Data have NULL pointer\n");
+                break;
+            case SIZE_ERROR:
+                fprintf(log_file, "Size is lower than 0\n");
+                break;
+            case CAP_ERROR:
+                fprintf(log_file, "Capacity is lower than 0\n");
+                break;
+            case SIZE_CAP_ERROR:
+                fprintf(log_file, "Size bigger than capacity\n");
+                break;
+            case POP_ERROR:
+                fprintf(log_file, "Try to pop empty stack\n");
+                break;
+            default:
+                fprintf(log_file, "Unknown error\n");
+                break;
         }
-        current++;
-        error_number >>= 1;
+        i++;
     }
-}
-
-void write_error_to_log(const char * error_string)
-{
-    fputs(error_string, log_file);
-    fputs("\n", log_file);
 }
 
 void stack_push(stack * stk, elem value)
@@ -135,14 +125,6 @@ void stack_resize(stack * stk, size_t new_size)
         write_zeros_to_data(stk, stk->size, stk->capacity);
     }
     stack_dump(stk, stack_verify(stk));
-}
-
-int power_two(int p)
-{
-    int ans = 1;
-    for (int i = 0; i < p; i++)
-        ans *= 2;
-    return ans;
 }
 
 void write_zeros_to_data(stack * stk, size_t i_start, size_t i_end)

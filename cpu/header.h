@@ -50,6 +50,8 @@ enum Errors
     POP_ERROR = 16,
 };
 
+const size_t ERRORS_COUNT = 5;
+
 enum Commands
 {
     HLT = 0,
@@ -97,10 +99,6 @@ void stack_pop(stack * stk, elem * value);
 void stack_resize(stack * stk, size_t new_size);
 
 void error_num_translate(int error_number);
-
-int power_two(int p);
-
-void write_error_to_log(const char * error_string);
 
 void stack_dump_(stack * stk, int error_number, const char * func, const char * file, int line);
 
